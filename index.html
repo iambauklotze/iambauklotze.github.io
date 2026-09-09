@@ -75,11 +75,11 @@
     transition:color .2s ease;
   }
   nav.links a:hover{color:var(--text);}
-  .nav-actions{display:flex; align-items:center; gap:14px;}
-  #themeToggle{
+  .nav-actions{display:flex; align-items:center; gap:10px;}
+  .icon-btn{
     background:var(--surface-2); border:1px solid var(--border); color:var(--text);
-    width:38px; height:38px; border-radius:10px; cursor:pointer; display:grid; place-items:center;
-    font-size:1rem;
+    min-width:38px; height:38px; padding:0 10px; border-radius:10px; cursor:pointer; display:grid; place-items:center;
+    font-size:.85rem; font-weight:700;
   }
   #menuToggle{display:none; background:none; border:none; color:var(--text); font-size:1.5rem; cursor:pointer;}
   .cta-small{
@@ -193,6 +193,9 @@
   .project-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
   .project-card h3{margin:0; font-size:1.08rem;}
   .project-status{font-size:.7rem; padding:4px 9px; border-radius:999px; white-space:nowrap; font-weight:700;}
+  .project-status.done{background:rgba(74,222,128,.12); color:var(--success); border:1px solid rgba(74,222,128,.3);}
+  .project-status.progress{background:rgba(251,191,36,.12); color:var(--warn); border:1px solid rgba(251,191,36,.3);}
+  .project-status.next{background:rgba(129,140,248,.12); color:var(--accent-2); border:1px solid rgba(129,140,248,.3);}
   .project-desc{color:var(--text-dim); font-size:.92rem; flex:1;}
   .tech-row{display:flex; flex-wrap:wrap; gap:6px;}
   .tech{font-size:.72rem; background:var(--surface-2); border:1px solid var(--border); padding:3px 9px; border-radius:6px; color:var(--text-faint);}
@@ -226,15 +229,16 @@
   <div class="nav-inner">
     <a href="#top" class="brand">Luiz Eduardo<span>.</span></a>
     <nav class="links" id="navLinks">
-      <a href="#sobre">Sobre</a>
-      <a href="#jornada">Jornada</a>
-      <a href="#skills">Skills</a>
-      <a href="#projetos">Projetos</a>
-      <a href="#contato">Contato</a>
+      <a href="#sobre" data-i18n="nav_sobre">Sobre</a>
+      <a href="#jornada" data-i18n="nav_jornada">Jornada</a>
+      <a href="#skills" data-i18n="nav_skills">Skills</a>
+      <a href="#projetos" data-i18n="nav_projetos">Projetos</a>
+      <a href="#contato" data-i18n="nav_contato">Contato</a>
     </nav>
     <div class="nav-actions">
-      <button id="themeToggle" title="Alternar tema" aria-label="Alternar tema claro/escuro">🌙</button>
-      <a class="cta-small" href="#contato">Contato</a>
+      <button id="themeToggle" class="icon-btn" title="Alternar tema" aria-label="Alternar tema claro/escuro">🌙</button>
+      <button id="langToggle" class="icon-btn" title="Switch language" aria-label="Trocar idioma / Switch language">EN</button>
+      <a class="cta-small" href="#contato" data-i18n="nav_contato">Contato</a>
       <button id="menuToggle" aria-label="Abrir menu">☰</button>
     </div>
   </div>
@@ -244,47 +248,43 @@
 
   <!-- HERO -->
   <section class="hero container">
-    <div class="eyebrow"><span class="dot"></span> Em formação · Machine Learning · Dados · MLOps</div>
-    <h1 class="title">Construindo minha carreira em <span class="grad">Machine Learning, Dados &amp; MLOps</span>, um projeto de cada vez.</h1>
-    <p class="lead">
-      Sou Luiz Eduardo. Estou em uma jornada de 4 anos para me tornar Engenheiro de Machine Learning,
-      Engenharia de Dados e MLOps — estudando pela pós-graduação em <strong>Machine Learning in Production (UFSCAR)</strong>
-      e por especializações no Coursera. Este espaço documenta cada etapa: do primeiro exercício ao primeiro sistema em produção.
-    </p>
+    <div class="eyebrow"><span class="dot"></span> <span data-i18n="eyebrow">Em formação · Machine Learning · Dados · MLOps</span></div>
+    <h1 class="title" data-i18n-html="hero_title"></h1>
+    <p class="lead" data-i18n-html="hero_lead"></p>
     <div class="hero-actions">
-      <a href="#projetos" class="btn btn-primary">Ver projetos →</a>
-      <a href="#jornada" class="btn btn-ghost">Ver minha jornada</a>
+      <a href="#projetos" class="btn btn-primary" data-i18n="btn_projetos">Ver projetos →</a>
+      <a href="#jornada" class="btn btn-ghost" data-i18n="btn_jornada">Ver minha jornada</a>
     </div>
     <div class="stats">
-      <div class="stat"><b id="statAno">2026</b><span>Início da jornada</span></div>
-      <div class="stat"><b id="statProjetos">0</b><span>Projetos publicados</span></div>
-      <div class="stat"><b>4 anos</b><span>Horizonte do plano</span></div>
+      <div class="stat"><b id="statAno">2026</b><span data-i18n="stat_ano">Início da jornada</span></div>
+      <div class="stat"><b id="statProjetos">0</b><span data-i18n="stat_projetos">Projetos publicados</span></div>
+      <div class="stat"><b data-i18n="stat_horizonte_valor">4 anos</b><span data-i18n="stat_horizonte">Horizonte do plano</span></div>
     </div>
   </section>
 
   <!-- SOBRE -->
   <section id="sobre" class="container reveal">
     <div class="section-head">
-      <span class="section-tag">Sobre</span>
-      <h2 class="section-title">Quem está construindo isso</h2>
-      <p class="section-desc">Um resumo honesto de onde estou e para onde vou — sem exagero de currículo, só o processo real.</p>
+      <span class="section-tag" data-i18n="sobre_tag">Sobre</span>
+      <h2 class="section-title" data-i18n="sobre_title">Quem está construindo isso</h2>
+      <p class="section-desc" data-i18n="sobre_desc">Um resumo honesto de onde estou e para onde vou — sem exagero de currículo, só o processo real.</p>
     </div>
     <div class="about-grid">
       <div class="about-card">
-        <h3>Minha trajetória</h3>
-        <p style="color:var(--text-dim); font-size:.98rem;">
+        <h3 data-i18n="about_c1_title">Minha trajetória</h3>
+        <p style="color:var(--text-dim); font-size:.98rem;" data-i18n="about_c1_text">
           Estou construindo minha base em dados e machine learning de forma estruturada: reforçando fundamentos,
           avançando em análise de dados e engenharia de dados, e aplicando tudo isso na prática através de
           projetos pequenos e recorrentes — cada um documentado aqui assim que é concluído.
         </p>
       </div>
       <div class="about-card">
-        <h3>Foco atual</h3>
+        <h3 data-i18n="about_c2_title">Foco atual</h3>
         <ul class="focus-list">
-          <li>Machine Learning Specialization e cursos correlatos (Coursera)</li>
-          <li>Data Analysis &amp; Data Engineering (Coursera)</li>
-          <li>Pós-graduação em Machine Learning in Production (UFSCAR)</li>
-          <li>Reforço de fundamentos de matemática aplicada a ML</li>
+          <li data-i18n="focus_1">Machine Learning Specialization e cursos correlatos (Coursera)</li>
+          <li data-i18n="focus_2">Data Analysis &amp; Data Engineering (Coursera)</li>
+          <li data-i18n="focus_3">Pós-graduação em Machine Learning in Production (UFSCAR)</li>
+          <li data-i18n="focus_4">Reforço de fundamentos de matemática aplicada a ML</li>
         </ul>
       </div>
     </div>
@@ -293,69 +293,47 @@
   <!-- JORNADA / TIMELINE -->
   <section id="jornada" class="container reveal">
     <div class="section-head">
-      <span class="section-tag">Jornada</span>
-      <h2 class="section-title">Linha do tempo de evolução</h2>
-      <p class="section-desc">Atualizo esta linha conforme avanço — o objetivo é mostrar o caminho, não só o resultado final.</p>
+      <span class="section-tag" data-i18n="jornada_tag">Jornada</span>
+      <h2 class="section-title" data-i18n="jornada_title">Linha do tempo de evolução</h2>
+      <p class="section-desc" data-i18n="jornada_desc">Atualizo esta linha conforme avanço — o objetivo é mostrar o caminho, não só o resultado final.</p>
     </div>
-    <div class="timeline">
-      <div class="tl-item now">
-        <div class="tl-dot"></div>
-        <div class="tl-date">2026 · Em andamento</div>
-        <div class="tl-title">Início formal da jornada em ML / Dados / MLOps</div>
-        <div class="tl-desc">Cursos de Data Analysis, Data Engineering e Machine Learning Specialization (Coursera) + pós-graduação em Machine Learning in Production (UFSCAR).</div>
-        <span class="tl-status progress">Em andamento</span>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-date">Próximo marco</div>
-        <div class="tl-title">Primeiro projeto de ponta a ponta publicado</div>
-        <div class="tl-desc">Primeiro pequeno projeto de análise de dados ou ML documentado aqui na seção de Projetos.</div>
-        <span class="tl-status next">Planejado</span>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-date">Horizonte</div>
-        <div class="tl-title">TCC: Machine Learning in Production</div>
-        <div class="tl-desc">Projeto prático e aplicado de conclusão da pós-graduação pela UFSCAR.</div>
-        <span class="tl-status next">Planejado</span>
-      </div>
-    </div>
+    <div class="timeline" id="timeline"></div>
   </section>
 
   <!-- SKILLS -->
   <section id="skills" class="container reveal">
     <div class="section-head">
-      <span class="section-tag">Skills</span>
-      <h2 class="section-title">O que já domino e o que estou construindo</h2>
-      <p class="section-desc">Classificação honesta por nível — atualizada conforme avanço nos cursos e projetos.</p>
+      <span class="section-tag" data-i18n="skills_tag">Skills</span>
+      <h2 class="section-title" data-i18n="skills_title">O que já domino e o que estou construindo</h2>
+      <p class="section-desc" data-i18n="skills_desc">Classificação honesta por nível — atualizada conforme avanço nos cursos e projetos.</p>
     </div>
     <div class="skills-grid">
       <div class="skill-card">
-        <h4>📊 Dados &amp; Análise</h4>
+        <h4 data-i18n="skill_cat1">📊 Dados &amp; Análise</h4>
         <div class="badge-row">
           <span class="badge learning">Python</span>
           <span class="badge learning">SQL</span>
-          <span class="badge learning">Análise Exploratória</span>
+          <span class="badge learning" data-i18n="skill_eda">Análise Exploratória</span>
         </div>
       </div>
       <div class="skill-card">
-        <h4>🤖 Machine Learning</h4>
+        <h4 data-i18n="skill_cat2">🤖 Machine Learning</h4>
         <div class="badge-row">
-          <span class="badge learning">Regressão &amp; Classificação</span>
+          <span class="badge learning" data-i18n="skill_regclass">Regressão &amp; Classificação</span>
           <span class="badge learning">scikit-learn</span>
         </div>
       </div>
       <div class="skill-card">
-        <h4>⚙️ Engenharia de Dados</h4>
+        <h4 data-i18n="skill_cat3">⚙️ Engenharia de Dados</h4>
         <div class="badge-row">
-          <span class="badge learning">Pipelines de Dados</span>
+          <span class="badge learning" data-i18n="skill_pipelines">Pipelines de Dados</span>
           <span class="badge learning">ETL</span>
         </div>
       </div>
       <div class="skill-card">
-        <h4>🚀 MLOps &amp; Infra</h4>
+        <h4 data-i18n="skill_cat4">🚀 MLOps &amp; Infra</h4>
         <div class="badge-row">
-          <span class="badge learning">Versionamento (Git)</span>
+          <span class="badge learning" data-i18n="skill_git">Versionamento (Git)</span>
           <span class="badge learning">Docker</span>
           <span class="badge learning">CI/CD</span>
         </div>
@@ -366,9 +344,9 @@
   <!-- PROJETOS -->
   <section id="projetos" class="container reveal">
     <div class="section-head">
-      <span class="section-tag">Projetos</span>
-      <h2 class="section-title">Projetos &amp; exercícios aplicados</h2>
-      <p class="section-desc">Cada card abaixo vem de um único lugar no código — veja o comentário "ADICIONE SEUS PROJETOS AQUI" perto do fim do arquivo.</p>
+      <span class="section-tag" data-i18n="projetos_tag">Projetos</span>
+      <h2 class="section-title" data-i18n="projetos_title">Projetos &amp; exercícios aplicados</h2>
+      <p class="section-desc" data-i18n="projetos_desc">Cada card abaixo vem de um único lugar no código — veja o comentário "ADICIONE SEUS PROJETOS AQUI" perto do fim do arquivo.</p>
     </div>
     <div class="projects-grid" id="projectsGrid"></div>
   </section>
@@ -376,13 +354,13 @@
   <!-- CONTATO -->
   <section id="contato" class="container reveal">
     <div class="contact-card">
-      <span class="section-tag">Contato</span>
-      <h2>Vamos conversar sobre dados, ML ou oportunidades</h2>
-      <p class="section-desc" style="margin:0 auto;">Estou aberto a conexões, feedback e oportunidades relacionadas a Machine Learning, Dados e MLOps.</p>
+      <span class="section-tag" data-i18n="contato_tag">Contato</span>
+      <h2 data-i18n="contato_title">Vamos conversar sobre dados, ML ou oportunidades</h2>
+      <p class="section-desc" style="margin:0 auto;" data-i18n="contato_desc">Estou aberto a conexões, feedback e oportunidades relacionadas a Machine Learning, Dados e MLOps.</p>
       <div class="social-row">
         <a class="social-btn" href="mailto:luizmenezesmg@gmail.com">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" opacity="0"/><path d="M4 6h16v12H4z"/><path d="M4 6l8 7 8-7"/></svg>
-          E-mail
+          <span data-i18n="social_email">E-mail</span>
         </a>
         <a class="social-btn" href="#" target="_blank" rel="noopener"><!-- TODO: coloque seu link do LinkedIn -->
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8h4V23h-4V8zm7.5 0h3.84v2.05h.05c.53-1 1.84-2.05 3.79-2.05 4.06 0 4.81 2.67 4.81 6.14V23h-4v-6.87c0-1.64-.03-3.75-2.29-3.75-2.29 0-2.64 1.79-2.64 3.63V23h-4V8z"/></svg>
@@ -399,7 +377,7 @@
 </main>
 
 <footer>
-  © <span id="year"></span> Luiz Eduardo — construído com HTML, CSS e JS puros, hospedado no GitHub Pages.
+  <span id="footerText"></span>
 </footer>
 
 <script>
@@ -425,58 +403,233 @@
   menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
   navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
 
-  // ===================== ANO NO RODAPÉ =====================
-  document.getElementById('year').textContent = new Date().getFullYear();
-  document.getElementById('statAno').textContent = new Date().getFullYear();
+  // =====================================================================
+  // IDIOMA (i18n)
+  // -----------------------------------------------------------------------
+  // DEFAULT_LANG define o idioma inicial do site. Por enquanto está "pt".
+  // Quando quiser que o inglês seja o padrão, troque para "en" — é só isso,
+  // uma linha, nada mais no resto do arquivo precisa mudar.
+  // =====================================================================
+  const DEFAULT_LANG = 'pt';
+  let lang = DEFAULT_LANG;
 
+  const i18n = {
+    pt: {
+      nav_sobre: "Sobre", nav_jornada: "Jornada", nav_skills: "Skills",
+      nav_projetos: "Projetos", nav_contato: "Contato",
+      eyebrow: "Em formação · Machine Learning · Dados · MLOps",
+      hero_title: 'Construindo minha carreira em <span class="grad">Machine Learning, Dados &amp; MLOps</span>, um projeto de cada vez.',
+      hero_lead: 'Sou Luiz Eduardo. Estou em uma jornada de 4 anos para me tornar Engenheiro de Machine Learning, Engenharia de Dados e MLOps — estudando pela pós-graduação em <strong>Machine Learning in Production (UFSCAR)</strong> e por especializações no Coursera. Este espaço documenta cada etapa: do primeiro exercício ao primeiro sistema em produção.',
+      btn_projetos: "Ver projetos →", btn_jornada: "Ver minha jornada",
+      stat_ano: "Início da jornada", stat_projetos: "Projetos publicados",
+      stat_horizonte: "Horizonte do plano", stat_horizonte_valor: "4 anos",
+      sobre_tag: "Sobre", sobre_title: "Quem está construindo isso",
+      sobre_desc: "Um resumo honesto de onde estou e para onde vou — sem exagero de currículo, só o processo real.",
+      about_c1_title: "Minha trajetória",
+      about_c1_text: "Estou construindo minha base em dados e machine learning de forma estruturada: reforçando fundamentos, avançando em análise de dados e engenharia de dados, e aplicando tudo isso na prática através de projetos pequenos e recorrentes — cada um documentado aqui assim que é concluído.",
+      about_c2_title: "Foco atual",
+      focus_1: "Machine Learning Specialization e cursos correlatos (Coursera)",
+      focus_2: "Data Analysis & Data Engineering (Coursera)",
+      focus_3: "Pós-graduação em Machine Learning in Production (UFSCAR)",
+      focus_4: "Reforço de fundamentos de matemática aplicada a ML",
+      jornada_tag: "Jornada", jornada_title: "Linha do tempo de evolução",
+      jornada_desc: "Atualizo esta linha conforme avanço — o objetivo é mostrar o caminho, não só o resultado final.",
+      skills_tag: "Skills", skills_title: "O que já domino e o que estou construindo",
+      skills_desc: "Classificação honesta por nível — atualizada conforme avanço nos cursos e projetos.",
+      skill_cat1: "📊 Dados & Análise", skill_cat2: "🤖 Machine Learning",
+      skill_cat3: "⚙️ Engenharia de Dados", skill_cat4: "🚀 MLOps & Infra",
+      skill_eda: "Análise Exploratória", skill_regclass: "Regressão & Classificação",
+      skill_pipelines: "Pipelines de Dados", skill_git: "Versionamento (Git)",
+      projetos_tag: "Projetos", projetos_title: "Projetos & exercícios aplicados",
+      projetos_desc: 'Cada card abaixo vem de um único lugar no código — veja o comentário "ADICIONE SEUS PROJETOS AQUI" perto do fim do arquivo.',
+      projeto_empty: 'Seu primeiro projeto vai aparecer aqui. Edite o array <code class="mono">projetos</code> no final deste arquivo para adicioná-lo.',
+      link_codigo: "Código →", link_demo: "Demo →",
+      contato_tag: "Contato", contato_title: "Vamos conversar sobre dados, ML ou oportunidades",
+      contato_desc: "Estou aberto a conexões, feedback e oportunidades relacionadas a Machine Learning, Dados e MLOps.",
+      social_email: "E-mail",
+      footer: (ano) => `© ${ano} Luiz Eduardo — construído com HTML, CSS e JS puros, hospedado no GitHub Pages.`,
+      status: { done: "Concluído", progress: "Em andamento", planned: "Planejado" },
+      page_title: "Luiz Eduardo — Machine Learning, Data & MLOps Engineer",
+      page_desc: "Portfólio de Luiz Eduardo — jornada e projetos em Machine Learning, Engenharia de Dados e MLOps.",
+      lang_btn: "EN"
+    },
+    en: {
+      nav_sobre: "About", nav_jornada: "Journey", nav_skills: "Skills",
+      nav_projetos: "Projects", nav_contato: "Contact",
+      eyebrow: "In training · Machine Learning · Data · MLOps",
+      hero_title: 'Building my career in <span class="grad">Machine Learning, Data &amp; MLOps</span>, one project at a time.',
+      hero_lead: "I'm Luiz Eduardo. I'm on a 4-year journey to become a Machine Learning, Data and MLOps Engineer — studying through a postgraduate degree in <strong>Machine Learning in Production (UFSCAR)</strong> and specializations on Coursera. This space documents every step: from the first exercise to the first system in production.",
+      btn_projetos: "View projects →", btn_jornada: "See my journey",
+      stat_ano: "Journey started", stat_projetos: "Published projects",
+      stat_horizonte: "Plan horizon", stat_horizonte_valor: "4 years",
+      sobre_tag: "About", sobre_title: "Who's building this",
+      sobre_desc: "An honest summary of where I am and where I'm headed — no résumé exaggeration, just the real process.",
+      about_c1_title: "My journey",
+      about_c1_text: "I'm building my foundation in data and machine learning in a structured way: reinforcing fundamentals, advancing in data analysis and data engineering, and applying all of it through small, recurring projects — each one documented here as soon as it's finished.",
+      about_c2_title: "Current focus",
+      focus_1: "Machine Learning Specialization and related courses (Coursera)",
+      focus_2: "Data Analysis & Data Engineering (Coursera)",
+      focus_3: "Postgraduate degree in Machine Learning in Production (UFSCAR)",
+      focus_4: "Reinforcing math fundamentals applied to ML",
+      jornada_tag: "Journey", jornada_title: "Progress timeline",
+      jornada_desc: "I update this line as I move forward — the goal is to show the path, not just the end result.",
+      skills_tag: "Skills", skills_title: "What I already know, and what I'm building",
+      skills_desc: "Honest self-rating — updated as I progress through courses and projects.",
+      skill_cat1: "📊 Data & Analysis", skill_cat2: "🤖 Machine Learning",
+      skill_cat3: "⚙️ Data Engineering", skill_cat4: "🚀 MLOps & Infra",
+      skill_eda: "Exploratory Analysis", skill_regclass: "Regression & Classification",
+      skill_pipelines: "Data Pipelines", skill_git: "Versioning (Git)",
+      projetos_tag: "Projects", projetos_title: "Projects & applied exercises",
+      projetos_desc: 'Every card below comes from a single place in the code — see the "ADD YOUR PROJECTS HERE" comment near the end of the file.',
+      projeto_empty: 'Your first project will show up here. Edit the <code class="mono">projetos</code> array near the end of this file to add it.',
+      link_codigo: "Code →", link_demo: "Demo →",
+      contato_tag: "Contact", contato_title: "Let's talk about data, ML or opportunities",
+      contato_desc: "I'm open to connections, feedback and opportunities related to Machine Learning, Data and MLOps.",
+      social_email: "Email",
+      footer: (ano) => `© ${ano} Luiz Eduardo — built with plain HTML, CSS and JS, hosted on GitHub Pages.`,
+      status: { done: "Completed", progress: "In progress", planned: "Planned" },
+      page_title: "Luiz Eduardo — Machine Learning, Data & MLOps Engineer",
+      page_desc: "Luiz Eduardo's portfolio — journey and projects in Machine Learning, Data Engineering and MLOps.",
+      lang_btn: "PT"
+    }
+  };
+
+  const langBtn = document.getElementById('langToggle');
+
+  function t(key){ return i18n[lang][key]; }
+
+  function applyLanguage(){
+    document.documentElement.lang = (lang === 'pt') ? 'pt-BR' : 'en';
+    document.title = t('page_title');
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', t('page_desc'));
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (i18n.pt[key] !== undefined) el.textContent = t(key);
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (i18n.pt[key] !== undefined) el.innerHTML = t(key);
+    });
+
+    langBtn.textContent = t('lang_btn');
+    document.getElementById('footerText').textContent = t('footer')(new Date().getFullYear());
+
+    renderJornada();
+    renderProjetos();
+  }
+
+  langBtn.addEventListener('click', () => {
+    lang = (lang === 'pt') ? 'en' : 'pt';
+    applyLanguage();
+  });
+
+  // ===================== JORNADA (linha do tempo) =====================
+  // =====================================================================
+  // ADICIONE NOVOS MARCOS DA SUA JORNADA AQUI
+  // Copie um objeto do array abaixo, cole antes do "]" e edite.
+  // status pode ser: "done" | "progress" | "planned"
+  // atual: true só no item que representa o "agora" (o ponto com destaque).
+  // Preencha sempre pt e en juntos, pra manter o toggle de idioma funcionando.
+  // =====================================================================
+  const jornada = [
+    {
+      atual: true,
+      status: "progress",
+      data: { pt: "2026 · Em andamento", en: "2026 · In progress" },
+      titulo: { pt: "Início formal da jornada em ML / Dados / MLOps", en: "Formal start of the ML / Data / MLOps journey" },
+      descricao: {
+        pt: "Cursos de Data Analysis, Data Engineering e Machine Learning Specialization (Coursera) + pós-graduação em Machine Learning in Production (UFSCAR).",
+        en: "Data Analysis, Data Engineering and Machine Learning Specialization courses (Coursera) + postgraduate degree in Machine Learning in Production (UFSCAR)."
+      }
+    },
+    {
+      atual: false,
+      status: "planned",
+      data: { pt: "Próximo marco", en: "Next milestone" },
+      titulo: { pt: "Primeiro projeto de ponta a ponta publicado", en: "First end-to-end project published" },
+      descricao: {
+        pt: "Primeiro pequeno projeto de análise de dados ou ML documentado aqui na seção de Projetos.",
+        en: "First small data analysis or ML project documented here in the Projects section."
+      }
+    },
+    {
+      atual: false,
+      status: "planned",
+      data: { pt: "Horizonte", en: "Horizon" },
+      titulo: { pt: "TCC: Machine Learning in Production", en: "Capstone: Machine Learning in Production" },
+      descricao: {
+        pt: "Projeto prático e aplicado de conclusão da pós-graduação pela UFSCAR.",
+        en: "Practical, applied capstone project for the UFSCAR postgraduate program."
+      }
+    },
+  ];
+
+  const statusClass = { done: "done", progress: "progress", planned: "next" };
+
+  function renderJornada(){
+    const el = document.getElementById('timeline');
+    el.innerHTML = jornada.map(item => `
+      <div class="tl-item ${item.atual ? 'now' : ''}">
+        <div class="tl-dot"></div>
+        <div class="tl-date">${item.data[lang]}</div>
+        <div class="tl-title">${item.titulo[lang]}</div>
+        <div class="tl-desc">${item.descricao[lang]}</div>
+        <span class="tl-status ${statusClass[item.status]}">${t('status')[item.status]}</span>
+      </div>
+    `).join('');
+  }
+
+  // ===================== PROJETOS =====================
   // =====================================================================
   // ADICIONE SEUS PROJETOS AQUI
-  // Copie um objeto do array abaixo, cole no final (antes do "]") e edite.
-  // status pode ser: "Concluído", "Em andamento" ou "Planejado"
+  // Copie um objeto do array abaixo, cole antes do "]" e edite.
+  // status pode ser: "done" | "progress" | "planned"
+  // Preencha titulo e descricao em pt e en juntos, pra manter o toggle de idioma.
   // =====================================================================
   const projetos = [
     // Exemplo — apague ou edite quando tiver seu primeiro projeto real:
     // {
-    //   titulo: "Análise Exploratória de Vendas",
-    //   descricao: "Exploração de um dataset público de vendas, com limpeza, EDA e visualizações em Python.",
+    //   titulo: { pt: "Análise Exploratória de Vendas", en: "Sales Exploratory Analysis" },
+    //   descricao: {
+    //     pt: "Exploração de um dataset público de vendas, com limpeza, EDA e visualizações em Python.",
+    //     en: "Exploration of a public sales dataset, with cleaning, EDA and visualizations in Python."
+    //   },
     //   tecnologias: ["Python", "Pandas", "Matplotlib"],
-    //   status: "Concluído",
+    //   status: "done", // "done" | "progress" | "planned"
     //   repo: "https://github.com/seu-usuario/seu-projeto",
     //   demo: ""
     // },
   ];
 
   const grid = document.getElementById('projectsGrid');
-  const statusColor = {
-    "Concluído": "background:rgba(74,222,128,.12); color:var(--success); border:1px solid rgba(74,222,128,.3);",
-    "Em andamento": "background:rgba(251,191,36,.12); color:var(--warn); border:1px solid rgba(251,191,36,.3);",
-    "Planejado": "background:rgba(129,140,248,.12); color:var(--accent-2); border:1px solid rgba(129,140,248,.3);"
-  };
 
   function renderProjetos(){
     document.getElementById('statProjetos').textContent = projetos.length;
     if(projetos.length === 0){
-      grid.innerHTML = `<div class="project-empty">
-        Seu primeiro projeto vai aparecer aqui. Edite o array <code class="mono">projetos</code> no final deste arquivo para adicioná-lo.
-      </div>`;
+      grid.innerHTML = `<div class="project-empty">${t('projeto_empty')}</div>`;
       return;
     }
     grid.innerHTML = projetos.map(p => `
       <div class="project-card">
         <div class="project-top">
-          <h3>${p.titulo}</h3>
-          <span class="project-status" style="${statusColor[p.status] || ''}">${p.status}</span>
+          <h3>${p.titulo[lang]}</h3>
+          <span class="project-status ${statusClass[p.status]}">${t('status')[p.status]}</span>
         </div>
-        <p class="project-desc">${p.descricao}</p>
-        <div class="tech-row">${(p.tecnologias||[]).map(t => `<span class="tech">${t}</span>`).join('')}</div>
+        <p class="project-desc">${p.descricao[lang]}</p>
+        <div class="tech-row">${(p.tecnologias||[]).map(tec => `<span class="tech">${tec}</span>`).join('')}</div>
         <div class="project-links">
-          ${p.repo ? `<a href="${p.repo}" target="_blank" rel="noopener">Código →</a>` : ''}
-          ${p.demo ? `<a href="${p.demo}" target="_blank" rel="noopener">Demo →</a>` : ''}
+          ${p.repo ? `<a href="${p.repo}" target="_blank" rel="noopener">${t('link_codigo')}</a>` : ''}
+          ${p.demo ? `<a href="${p.demo}" target="_blank" rel="noopener">${t('link_demo')}</a>` : ''}
         </div>
       </div>
     `).join('');
   }
-  renderProjetos();
+
+  document.getElementById('statAno').textContent = new Date().getFullYear();
+
+  applyLanguage();
 
   // ===================== SCROLL REVEAL =====================
   const revealEls = document.querySelectorAll('.reveal');
