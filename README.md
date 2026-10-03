@@ -61,7 +61,7 @@ Além do portfólio na raiz, o repositório hospeda páginas autônomas em subpa
 | Pasta | O que é | Link |
 | --- | --- | --- |
 | `vsm-guide/` | Guia de metodologia de Mapa de Fluxo de Valor (VSM) | `/vsm-guide/` |
-| `regressao-linear/` | Painel interativo de regressão linear com gradiente descendente (PT/EN, inglês por padrão) | `/regressao-linear/` |
+| `linear-regradesc/` | Painel interativo de regressão linear com gradiente descendente (PT/EN, inglês por padrão) | `/linear-regradesc/` |
 
 Para adicionar uma nova página: crie a pasta, coloque o `index.html` dela dentro e, se for algo mostrável, registre um card no array `projetos` com o link no campo `demo`.
 
