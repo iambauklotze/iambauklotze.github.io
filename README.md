@@ -72,9 +72,9 @@ Para adicionar uma nova página: crie a pasta, coloque o `index.html` dela dentr
 - O botão de idioma fica ao lado do botão de tema (claro/escuro), no canto superior direito.
 - O idioma inicial é controlado por uma única linha no `<script>`, perto do início do bloco de i18n:
   ```js
-  const DEFAULT_LANG = 'pt';
+  const DEFAULT_LANG = 'en';
   ```
-  Quando quiser que o inglês vire o padrão, troque para `'en'` — nada mais no arquivo precisa mudar.
+  O padrão atual é o inglês, para divulgação em comunidades internacionais. Para voltar ao português, troque para `'pt'` — nada mais no arquivo precisa mudar. A tag `<html lang>` e a `meta description` também estão em inglês, porque são o que aparece em buscadores e nas prévias de link.
 - Textos fixos da página (menu, seções, rótulos) ficam centralizados no objeto `i18n` no `<script>`. Se um dia quiser ajustar uma frase, é lá que ela está — em `i18n.pt.<chave>` e `i18n.en.<chave>`.
 
 ## Onde editar seus links reais
