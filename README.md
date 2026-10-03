@@ -54,6 +54,19 @@ Importante: quando adicionar um novo marco "atual", lembre de mudar o anterior d
 
 Preencha sempre `pt` e `en` juntos — é isso que mantém o botão de idioma funcionando para todo o conteúdo, não só para os textos fixos da página.
 
+## Páginas independentes (subpastas)
+
+Além do portfólio na raiz, o repositório hospeda páginas autônomas em subpastas. Cada uma tem o próprio `index.html` e é publicada em `https://iambauklotze.github.io/<pasta>/`:
+
+| Pasta | O que é | Link |
+| --- | --- | --- |
+| `vsm-guide/` | Guia de metodologia de Mapa de Fluxo de Valor (VSM) | `/vsm-guide/` |
+| `regressao-linear/` | Painel interativo de regressão linear com gradiente descendente (PT/EN, inglês por padrão) | `/regressao-linear/` |
+
+Para adicionar uma nova página: crie a pasta, coloque o `index.html` dela dentro e, se for algo mostrável, registre um card no array `projetos` com o link no campo `demo`.
+
+**Cuidado:** todas essas páginas se chamam `index.html`. Antes de cada commit, rode `git status` e confira que o arquivo alterado está na pasta certa. Um `index.html` de subpasta salvo na raiz substitui o portfólio.
+
 ## Sobre o idioma (PT/EN)
 
 - O botão de idioma fica ao lado do botão de tema (claro/escuro), no canto superior direito.
