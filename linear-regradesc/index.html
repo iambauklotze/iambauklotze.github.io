@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Regressão linear com gradiente descendente</title>
+<title>Linear regression with gradient descent</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
@@ -32,7 +32,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
 .top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0}
 .brand{display:flex;align-items:center;gap:10px;font-weight:500;font-size:14px;color:var(--ink2)}
 .brand svg{width:28px;height:28px}
-.tools{display:flex;gap:8px}
+.tools{display:flex;gap:8px;align-items:center}
+.back{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--mute);text-decoration:none;padding:6px 8px;border-radius:6px;transition:color .15s}
+.back:hover{color:var(--ink)}
+.back svg{width:14px;height:14px}
+@media (max-width:480px){.back span{display:none}}
 .chip{font:inherit;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer;transition:border-color .15s}
 .chip:hover{border-color:var(--mute)}
 .chip svg{width:15px;height:15px}
@@ -121,6 +125,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
     <span data-i18n="brand">Laboratório de regressão</span>
   </div>
   <div class="tools">
+    <a class="back" href="https://iambauklotze.github.io/" aria-label="Portfolio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span data-i18n="back">Portfólio</span></a>
     <button class="chip" id="btheme" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg><span id="ttheme">Tema automático</span></button>
     <button class="chip" id="blang" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg><span id="tlang">English</span></button>
   </div>
@@ -216,7 +221,7 @@ e2t:"Um ponto, uma reta",e2:"Clique em lugares distantes no mapa de contorno. An
 e3t:"A trajetória",e3:"Reinicie e rode a descida com <i>α</i> = 0,010. Por que o caminho não vai em linha reta até o mínimo? Compare as fórmulas de ∂J/∂w e ∂J/∂b antes de responder.",
 e4t:"O limite do α",e4:"Preveja o que acontece com <i>α</i> = 0,025 e só então teste. Encontre o maior <i>α</i> que ainda converge.",
 note:"Os 97 pontos são sintéticos, gerados com distribuição parecida com a do dataset do lab (população entre 5 e 22,5 em unidades de 10.000; lucro médio mensal em unidades de $10.000). Os números não batem exatamente com os do notebook, mas o comportamento do algoritmo é o mesmo.",
-langBtn:"English",themeAuto:"Tema automático",themeLight:"Tema claro",themeDark:"Tema escuro"},
+langBtn:"English",back:"Portfólio",themeAuto:"Tema automático",themeLight:"Tema claro",themeDark:"Tema escuro"},
 en:{brand:"Regression lab",title:"Linear regression with gradient descent",sub:"One model, one cost function, and the algorithm that minimizes it, all at once. Change any of them and watch the others respond.",
 cost:"Cost J",iter:"Iteration",jmin:"Minimum of J",params:"Model parameters",slope:"Slope",icpt:"Intercept",gd:"Gradient descent",lr:"Learning rate",speed:"Iterations per frame",
 run:"Run descent",pause:"Pause",step:"One step",reset:"Reset",res:"Show residuals",
@@ -230,9 +235,9 @@ e2t:"One point, one line",e2:"Click far-apart spots on the contour map. Before e
 e3t:"The path",e3:"Reset and run the descent with <i>α</i> = 0.010. Why doesn't the path head straight to the minimum? Compare the formulas for ∂J/∂w and ∂J/∂b before answering.",
 e4t:"The limit of α",e4:"Predict what happens with <i>α</i> = 0.025, then test it. Find the largest <i>α</i> that still converges.",
 note:"The 97 points are synthetic, generated with a distribution similar to the lab's dataset (population between 5 and 22.5 in units of 10,000; average monthly profit in units of $10,000). The numbers won't match the notebook exactly, but the algorithm behaves the same way.",
-langBtn:"Português",themeAuto:"Auto theme",themeLight:"Light theme",themeDark:"Dark theme"}};
+langBtn:"Português",back:"Portfolio",themeAuto:"Auto theme",themeLight:"Light theme",themeDark:"Dark theme"}};
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-let lang=store.get('rl-lang')==='en'?'en':'pt',themeMode=store.get('rl-theme')||'auto';
+let lang=store.get('rl-lang')==='pt'?'pt':'en',themeMode=store.get('rl-theme')||'auto';
 const t=k=>I18N[lang][k];
 const $=id=>document.getElementById(id);
 function applyLang(){document.documentElement.lang=lang==='en'?'en':'pt-BR';document.title=t('title');
