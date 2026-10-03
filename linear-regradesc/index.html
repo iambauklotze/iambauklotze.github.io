@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Regressão linear com gradiente descendente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F4F7;--panel:#FFFFFF;--panel2:#F7F9FB;--ink:#121A24;--ink2:#47546A;--mute:#7C889B;--rule:#DCE2EA;--grid:#E9EDF2;
+  --accent:#2F55D4;--accent-ink:#FFFFFF;--accent-soft:#E6ECFC;
+  --data:#E0533D;--model:#2F55D4;--path:#E39A0E;--lo:#F1F5FC;--hi:#24439F;--danger:#C0352B;--danger-soft:#FCEBE9;
+  --math:"STIX Two Text","Cambria Math",Cambria,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --r-lg:16px;--r-md:10px;--r-sm:7px;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C1117;--panel:#141B23;--panel2:#18212B;--ink:#E7ECF2;--ink2:#A9B5C4;--mute:#76839A;--rule:#26313D;--grid:#1E2832;
+  --accent:#7D9BFF;--accent-ink:#0C1117;--accent-soft:#1C2742;
+  --data:#FF7A63;--model:#7D9BFF;--path:#F5B53D;--lo:#121A26;--hi:#8EA9FF;--danger:#FF8A7E;--danger-soft:#3A1D1B;}}
+:root[data-theme="dark"]{
+  --bg:#0C1117;--panel:#141B23;--panel2:#18212B;--ink:#E7ECF2;--ink2:#A9B5C4;--mute:#76839A;--rule:#26313D;--grid:#1E2832;
+  --accent:#7D9BFF;--accent-ink:#0C1117;--accent-soft:#1C2742;
+  --data:#FF7A63;--model:#7D9BFF;--path:#F5B53D;--lo:#121A26;--hi:#8EA9FF;--danger:#FF8A7E;--danger-soft:#3A1D1B;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px 56px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:500;font-size:14px;color:var(--ink2)}
+.brand svg{width:28px;height:28px}
+.tools{display:flex;gap:8px}
+.chip{font:inherit;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer;transition:border-color .15s}
+.chip:hover{border-color:var(--mute)}
+.chip svg{width:15px;height:15px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:end;padding:28px 0 26px}
+@media (max-width:960px){.hero{grid-template-columns:1fr;align-items:start}}
+.hero h1{font-family:var(--math);font-weight:400;font-size:clamp(30px,4vw,44px);line-height:1.08;letter-spacing:-.01em;margin:0 0 12px}
+.hero p{margin:0;color:var(--ink2);font-size:16px;max-width:52ch}
+.eqcard{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px 22px}
+.eq{font-family:var(--math);font-size:clamp(28px,3.4vw,40px);line-height:1.2;font-variant-numeric:tabular-nums lining-nums;white-space:nowrap;overflow-x:auto}
+.eq i{font-style:italic}
+.eq .m{color:var(--model)}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
+@media (max-width:560px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.stat span{display:block;font-size:12px;color:var(--mute);white-space:nowrap}
+.stat b{display:block;font-weight:500;font-size:16px;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat.hl b{color:var(--model)}
+.bench{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:960px){.bench{grid-template-columns:1fr}}
+aside{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px;position:sticky;top:calc(16px + env(safe-area-inset-top,0px))}
+@media (max-width:960px){aside{position:static}}
+aside h2{font-size:13px;font-weight:600;color:var(--ink2);margin:0 0 14px}
+.grp{padding:4px 0 14px;border-bottom:1px solid var(--rule);margin-bottom:14px}
+.grp:last-of-type{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.ctl{display:grid;grid-template-columns:1fr auto;gap:6px 10px;margin:0 0 14px}
+.ctl:last-child{margin-bottom:0}
+.ctl label{font-size:13px;color:var(--ink2)}
+.ctl label i{font-family:var(--math);font-size:15px}
+.ctl output{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink);background:var(--panel2);border:1px solid var(--rule);border-radius:6px;padding:0 7px;min-width:52px;text-align:right}
+input[type=range]{grid-column:1/-1;width:100%;-webkit-appearance:none;appearance:none;height:22px;background:transparent;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(to right,var(--accent) var(--p,50%),var(--rule) var(--p,50%))}
+input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--rule)}
+input[type=range]::-moz-range-progress{height:4px;border-radius:4px;background:var(--accent)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--panel);border:2px solid var(--accent);margin-top:-7px;transition:transform .12s}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--panel);border:2px solid var(--accent)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{font:inherit;font-size:14px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 12px;border-radius:var(--r-sm);border:1px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--mute)}
+.btn svg{width:15px;height:15px}
+.btn.primary{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.06)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--ink2);cursor:pointer;margin-top:12px}
+.switch input{appearance:none;-webkit-appearance:none;width:34px;height:20px;border-radius:999px;background:var(--rule);position:relative;cursor:pointer;transition:background .15s;margin:0;flex:none}
+.switch input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--panel);transition:transform .15s}
+.switch input:checked{background:var(--accent)}
+.switch input:checked::after{transform:translateX(14px)}
+.warn{display:none;margin-top:12px;font-size:13px;color:var(--danger);background:var(--danger-soft);border-radius:var(--r-sm);padding:8px 10px}
+.warn.on{display:block}
+.figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:720px){.figs{grid-template-columns:1fr}}
+figure{margin:0;background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-lg);padding:16px 16px 10px}
+.fh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:0 2px 8px}
+.fh h3{font-size:14px;font-weight:600;margin:0}
+.fh h3 em{font-family:var(--math);font-weight:500;font-size:16px}
+.fh p{font-size:12.5px;color:var(--mute);margin:2px 0 0}
+.fh p em{font-family:var(--math);font-size:14px}
+.lg{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;font-size:12px;color:var(--ink2);flex:none;max-width:50%}
+.lg span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.lg i{display:inline-block;width:12px;height:3px;border-radius:2px}
+.cv{position:relative;height:300px}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+#c2{cursor:crosshair}#c3{cursor:grab}
+.lab{margin-top:44px}
+.lab-h{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.lab-h h2{font-family:var(--math);font-weight:400;font-size:30px;margin:0}
+.lab-h p{margin:0;color:var(--ink2);font-size:14px}
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;counter-reset:s;padding:0;margin:0;list-style:none}
+@media (max-width:720px){.steps{grid-template-columns:1fr}}
+.steps li{counter-increment:s;background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-lg);padding:18px 18px 16px;display:grid;grid-template-columns:34px 1fr;gap:0 12px}
+.steps li::before{content:counter(s);font-family:var(--math);font-size:22px;color:var(--accent);line-height:1.1}
+.steps h3{font-size:15px;font-weight:600;margin:0 0 4px}
+.steps p{margin:0 0 10px;color:var(--ink2);font-size:14px}
+.steps p i{font-family:var(--math);font-size:16px}
+.steps textarea{grid-column:2;width:100%;min-height:62px;resize:vertical;font:inherit;font-size:14px;color:var(--ink);background:var(--panel2);border:1px solid var(--rule);border-radius:var(--r-sm);padding:8px 10px}
+.steps textarea::placeholder{color:var(--mute)}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute);max-width:90ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top">
+  <div class="brand">
+    <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="0.5" y="0.5" width="27" height="27" rx="7" fill="var(--accent-soft)" stroke="var(--rule)"/><path d="M5 21 L23 7" stroke="var(--model)" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="15" r="1.8" fill="var(--data)"/><circle cx="13" cy="16" r="1.8" fill="var(--data)"/><circle cx="17" cy="10" r="1.8" fill="var(--data)"/><circle cx="21" cy="11" r="1.8" fill="var(--data)"/></svg>
+    <span data-i18n="brand">Laboratório de regressão</span>
+  </div>
+  <div class="tools">
+    <button class="chip" id="btheme" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg><span id="ttheme">Tema automático</span></button>
+    <button class="chip" id="blang" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg><span id="tlang">English</span></button>
+  </div>
+</div>
+
+<section class="hero">
+  <div>
+    <h1 data-i18n="title">Regressão linear com gradiente descendente</h1>
+    <p data-i18n="sub">Um modelo, uma função de custo e o algoritmo que a minimiza, vistos ao mesmo tempo. Mexa em qualquer um e veja os outros reagirem.</p>
+  </div>
+  <div class="eqcard" aria-live="polite">
+    <div class="eq"><i>f</i><sub style="font-size:.45em"><i>w,b</i></sub>(<i>x</i>) = <span class="m" id="eqw">0.00</span><i>x</i> <span id="eqs">+</span> <span class="m" id="eqb">0.00</span></div>
+    <div class="stats">
+      <div class="stat hl"><span data-i18n="cost">Custo J</span><b id="rJ">–</b></div>
+      <div class="stat"><span data-i18n="iter">Iteração</span><b id="rI">0</b></div>
+      <div class="stat"><span>∂J/∂w</span><b id="rdw">–</b></div>
+      <div class="stat"><span>∂J/∂b</span><b id="rdb">–</b></div>
+      <div class="stat"><span data-i18n="jmin">Mínimo de J</span><b id="rMin">–</b></div>
+    </div>
+  </div>
+</section>
+
+<div class="bench">
+<aside>
+  <h2 data-i18n="params">Parâmetros do modelo</h2>
+  <div class="grp">
+    <div class="ctl"><label for="sw"><span data-i18n="slope">Inclinação</span> <i>w</i></label><output id="ow">0.00</output><input type="range" id="sw" min="-1" max="3" step="0.01" value="0"></div>
+    <div class="ctl"><label for="sb"><span data-i18n="icpt">Intercepto</span> <i>b</i></label><output id="ob">0.00</output><input type="range" id="sb" min="-10" max="6" step="0.05" value="0"></div>
+  </div>
+  <h2 data-i18n="gd">Gradiente descendente</h2>
+  <div class="grp">
+    <div class="ctl"><label for="sa"><span data-i18n="lr">Taxa de aprendizado</span> <i>α</i></label><output id="oa">0.010</output><input type="range" id="sa" min="0.001" max="0.025" step="0.001" value="0.010"></div>
+    <div class="ctl"><label for="ss" data-i18n="speed">Iterações por quadro</label><output id="os">5</output><input type="range" id="ss" min="1" max="50" step="1" value="5"></div>
+    <div class="btns">
+      <button class="btn primary" id="brun" type="button"><svg id="irun" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><span id="trun">Rodar descida</span></button>
+      <button class="btn" id="bstep" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6"/></svg><span data-i18n="step">Um passo</span></button>
+      <button class="btn" id="breset" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4h4"/></svg><span data-i18n="reset">Reiniciar</span></button>
+    </div>
+    <label class="switch"><span data-i18n="res">Mostrar resíduos</span><input type="checkbox" id="cres" checked></label>
+    <div class="warn" id="warn" role="status"></div>
+  </div>
+</aside>
+
+<div class="figs">
+  <figure>
+    <div class="fh"><div><h3 data-i18n="f1">Dados e modelo</h3><p data-i18n-html="f1s">Cada tracejado é um erro <em>f</em>(<em>x</em>⁽ⁱ⁾) − <em>y</em>⁽ⁱ⁾</p></div>
+      <div class="lg"><span><i style="background:var(--data)"></i><b data-i18n="lgData" style="font-weight:400">dados</b></span><span><i style="background:var(--model)"></i><b data-i18n="lgModel" style="font-weight:400">modelo</b></span></div></div>
+    <div class="cv"><canvas id="c1" role="img" aria-label="Scatter plot with model line"></canvas></div>
+  </figure>
+  <figure>
+    <div class="fh"><div><h3 data-i18n-html="f2">Curvas de nível de <em>J</em></h3><p data-i18n="f2s">Clique para escolher (w, b)</p></div>
+      <div class="lg"><span><i style="background:var(--path)"></i><b data-i18n="lgPath" style="font-weight:400">trajetória</b></span><span><i style="background:var(--ink)"></i><b data-i18n="lgMin" style="font-weight:400">mínimo</b></span></div></div>
+    <div class="cv"><canvas id="c2" role="img" aria-label="Cost contour map with gradient descent path"></canvas></div>
+  </figure>
+  <figure>
+    <div class="fh"><div><h3 data-i18n-html="f3">Superfície de <em>J</em>(<em>w</em>, <em>b</em>)</h3><p data-i18n="f3s">Arraste para girar</p></div>
+      <div class="lg"><span><i style="background:var(--path)"></i><b data-i18n="lgPath2" style="font-weight:400">trajetória</b></span></div></div>
+    <div class="cv"><canvas id="c3" role="img" aria-label="Rotatable 3D cost surface"></canvas></div>
+  </figure>
+  <figure>
+    <div class="fh"><div><h3 data-i18n="f4">Custo por iteração</h3><p data-i18n="f4s">Escala logarítmica</p></div>
+      <div class="lg"><span><i style="background:var(--model)"></i>J</span><span><i style="background:var(--mute)"></i><b data-i18n="lgMin2" style="font-weight:400">mínimo</b></span></div></div>
+    <div class="cv"><canvas id="c4" role="img" aria-label="Cost per iteration"></canvas></div>
+  </figure>
+</div>
+</div>
+
+<section class="lab">
+  <div class="lab-h"><h2 data-i18n="labT">Roteiro de experimentos</h2><p data-i18n="labS">Escreva sua previsão antes de rodar. Ela fica salva neste navegador.</p></div>
+  <ol class="steps">
+    <li><div><h3 data-i18n="e1t">Ajuste à mão</h3><p data-i18n-html="e1">Use só os controles de <i>w</i> e <i>b</i> e tente chegar perto do mínimo. Observe como o tamanho dos tracejados acompanha o valor de <i>J</i>.</p></div><textarea data-k="e1" data-i18n-ph="ph"></textarea></li>
+    <li><div><h3 data-i18n="e2t">Um ponto, uma reta</h3><p data-i18n="e2">Clique em lugares distantes no mapa de contorno. Antes de cada clique, preveja como a reta vai ficar.</p></div><textarea data-k="e2" data-i18n-ph="ph"></textarea></li>
+    <li><div><h3 data-i18n="e3t">A trajetória</h3><p data-i18n-html="e3">Reinicie e rode a descida com <i>α</i> = 0,010. Por que o caminho não vai em linha reta até o mínimo? Compare as fórmulas de ∂J/∂w e ∂J/∂b antes de responder.</p></div><textarea data-k="e3" data-i18n-ph="ph"></textarea></li>
+    <li><div><h3 data-i18n="e4t">O limite do α</h3><p data-i18n-html="e4">Preveja o que acontece com <i>α</i> = 0,025 e só então teste. Encontre o maior <i>α</i> que ainda converge.</p></div><textarea data-k="e4" data-i18n-ph="ph"></textarea></li>
+  </ol>
+</section>
+
+<footer data-i18n="note">Os 97 pontos são sintéticos, gerados com distribuição parecida com a do dataset do lab (população entre 5 e 22,5 em unidades de 10.000; lucro médio mensal em unidades de $10.000). Os números não batem exatamente com os do notebook, mas o comportamento do algoritmo é o mesmo.</footer>
+</div>
+
+<script>
+const I18N={
+pt:{brand:"Laboratório de regressão",title:"Regressão linear com gradiente descendente",sub:"Um modelo, uma função de custo e o algoritmo que a minimiza, vistos ao mesmo tempo. Mexa em qualquer um e veja os outros reagirem.",
+cost:"Custo J",iter:"Iteração",jmin:"Mínimo de J",params:"Parâmetros do modelo",slope:"Inclinação",icpt:"Intercepto",gd:"Gradiente descendente",lr:"Taxa de aprendizado",speed:"Iterações por quadro",
+run:"Rodar descida",pause:"Pausar",step:"Um passo",reset:"Reiniciar",res:"Mostrar resíduos",
+f1:"Dados e modelo",f1s:"Cada tracejado é um erro <em>f</em>(<em>x</em>⁽ⁱ⁾) − <em>y</em>⁽ⁱ⁾",f2:"Curvas de nível de <em>J</em>",f2s:"Clique para escolher (w, b)",f3:"Superfície de <em>J</em>(<em>w</em>, <em>b</em>)",f3s:"Arraste para girar",f4:"Custo por iteração",f4s:"Escala logarítmica",
+lgData:"dados",lgModel:"modelo",lgPath:"trajetória",lgPath2:"trajetória",lgMin:"mínimo",lgMin2:"mínimo",
+axPop:"população (×10.000)",axProfit:"lucro (×$10.000)",axIter:"iteração",
+warn:"O custo explodiu: com esse α a descida diverge. Reduza o α e reinicie.",
+labT:"Roteiro de experimentos",labS:"Escreva sua previsão antes de rodar. Ela fica salva neste navegador.",ph:"Sua previsão…",
+e1t:"Ajuste à mão",e1:"Use só os controles de <i>w</i> e <i>b</i> e tente chegar perto do mínimo. Observe como o tamanho dos tracejados acompanha o valor de <i>J</i>.",
+e2t:"Um ponto, uma reta",e2:"Clique em lugares distantes no mapa de contorno. Antes de cada clique, preveja como a reta vai ficar.",
+e3t:"A trajetória",e3:"Reinicie e rode a descida com <i>α</i> = 0,010. Por que o caminho não vai em linha reta até o mínimo? Compare as fórmulas de ∂J/∂w e ∂J/∂b antes de responder.",
+e4t:"O limite do α",e4:"Preveja o que acontece com <i>α</i> = 0,025 e só então teste. Encontre o maior <i>α</i> que ainda converge.",
+note:"Os 97 pontos são sintéticos, gerados com distribuição parecida com a do dataset do lab (população entre 5 e 22,5 em unidades de 10.000; lucro médio mensal em unidades de $10.000). Os números não batem exatamente com os do notebook, mas o comportamento do algoritmo é o mesmo.",
+langBtn:"English",themeAuto:"Tema automático",themeLight:"Tema claro",themeDark:"Tema escuro"},
+en:{brand:"Regression lab",title:"Linear regression with gradient descent",sub:"One model, one cost function, and the algorithm that minimizes it, all at once. Change any of them and watch the others respond.",
+cost:"Cost J",iter:"Iteration",jmin:"Minimum of J",params:"Model parameters",slope:"Slope",icpt:"Intercept",gd:"Gradient descent",lr:"Learning rate",speed:"Iterations per frame",
+run:"Run descent",pause:"Pause",step:"One step",reset:"Reset",res:"Show residuals",
+f1:"Data and model",f1s:"Each dashed line is an error <em>f</em>(<em>x</em>⁽ⁱ⁾) − <em>y</em>⁽ⁱ⁾",f2:"Contour of <em>J</em>",f2s:"Click to pick (w, b)",f3:"Surface of <em>J</em>(<em>w</em>, <em>b</em>)",f3s:"Drag to rotate",f4:"Cost per iteration",f4s:"Log scale",
+lgData:"data",lgModel:"model",lgPath:"path",lgPath2:"path",lgMin:"minimum",lgMin2:"minimum",
+axPop:"population (×10,000)",axProfit:"profit (×$10,000)",axIter:"iteration",
+warn:"The cost blew up: with this α the descent diverges. Lower α and reset.",
+labT:"Experiment guide",labS:"Write your prediction before running. It's saved in this browser.",ph:"Your prediction…",
+e1t:"Fit by hand",e1:"Use only the <i>w</i> and <i>b</i> controls and try to get close to the minimum. Notice how the length of the dashed lines tracks the value of <i>J</i>.",
+e2t:"One point, one line",e2:"Click far-apart spots on the contour map. Before each click, predict what the line will look like.",
+e3t:"The path",e3:"Reset and run the descent with <i>α</i> = 0.010. Why doesn't the path head straight to the minimum? Compare the formulas for ∂J/∂w and ∂J/∂b before answering.",
+e4t:"The limit of α",e4:"Predict what happens with <i>α</i> = 0.025, then test it. Find the largest <i>α</i> that still converges.",
+note:"The 97 points are synthetic, generated with a distribution similar to the lab's dataset (population between 5 and 22.5 in units of 10,000; average monthly profit in units of $10,000). The numbers won't match the notebook exactly, but the algorithm behaves the same way.",
+langBtn:"Português",themeAuto:"Auto theme",themeLight:"Light theme",themeDark:"Dark theme"}};
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let lang=store.get('rl-lang')==='en'?'en':'pt',themeMode=store.get('rl-theme')||'auto';
+const t=k=>I18N[lang][k];
+const $=id=>document.getElementById(id);
+function applyLang(){document.documentElement.lang=lang==='en'?'en':'pt-BR';document.title=t('title');
+  document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
+  document.querySelectorAll('[data-i18n-html]').forEach(e=>e.innerHTML=t(e.dataset.i18nHtml));
+  document.querySelectorAll('[data-i18n-ph]').forEach(e=>e.placeholder=t(e.dataset.i18nPh));
+  $('tlang').textContent=t('langBtn');$('trun').textContent=running?t('pause'):t('run');
+  if($('warn').classList.contains('on'))$('warn').textContent=t('warn');applyThemeLabel();if(T.ink)draw()}
+function applyThemeLabel(){$('ttheme').textContent=t(themeMode==='light'?'themeLight':themeMode==='dark'?'themeDark':'themeAuto')}
+function applyTheme(){if(themeMode==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',themeMode);applyThemeLabel()}
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+const gauss=()=>{const u=rnd()||1e-9,v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+const m=97,X=[],Y=[];
+for(let i=0;i<m;i++){const x=5+Math.pow(rnd(),2.2)*17.5;X.push(x);Y.push(1.17*x-3.6+gauss()*2.9)}
+const cost=(w,b)=>{let s=0;for(let i=0;i<m;i++){const e=w*X[i]+b-Y[i];s+=e*e}return s/(2*m)};
+const grad=(w,b)=>{let dw=0,db=0;for(let i=0;i<m;i++){const e=w*X[i]+b-Y[i];dw+=e*X[i];db+=e}return[dw/m,db/m]};
+let sx=0,sy=0,sxx=0,sxy=0;for(let i=0;i<m;i++){sx+=X[i];sy+=Y[i];sxx+=X[i]*X[i];sxy+=X[i]*Y[i]}
+const wOpt=(m*sxy-sx*sy)/(m*sxx-sx*sx),bOpt=(sy-wOpt*sx)/m,JOpt=cost(wOpt,bOpt);
+const W0=-1,W1=3,B0=-10,B1=6;
+let w=0,b=0,it=0,path=[[0,0]],hist=[cost(0,0)],running=false,az=-0.9,el=0.55;
+const T={};
+function theme(){['ink','ink2','mute','rule','grid','data','model','path','lo','hi','panel','sans'].forEach(k=>T[k]=css('--'+k))}
+const hex=h=>{h=h.replace('#','');return[0,2,4].map(i=>parseInt(h.substr(i,2),16))};
+const mix=(a,c,u)=>{const A=hex(a),B=hex(c);return A.map((x,i)=>Math.round(x+(B[i]-x)*u))};
+function setup(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);const ctx=cv.getContext('2d');ctx.setTransform(d,0,0,d,0,0);return[ctx,r.width,r.height]}
+const P={l:48,r:10,t:6,bt:36};
+function ticks(a,c){const s=(c-a)/5,p=Math.pow(10,Math.floor(Math.log10(s))),f=s/p,st=(f<1.5?1:f<3.5?2:f<7.5?5:10)*p,o=[];for(let v=Math.ceil(a/st)*st;v<=c+1e-9;v+=st)o.push(+v.toFixed(6));return o}
+function axes(ctx,Wd,H,x0,x1,y0,y1,xl,yl,ylog,xmath,ymath){
+  const pw=Wd-P.l-P.r,ph=H-P.t-P.bt,px=v=>P.l+(v-x0)/(x1-x0)*pw,py=v=>P.t+(y1-v)/(y1-y0)*ph;
+  ctx.font='11px '+T.sans;ctx.lineWidth=1;ctx.fillStyle=T.mute;ctx.textAlign='center';
+  ticks(x0,x1).forEach(v=>{ctx.strokeStyle=T.grid;ctx.beginPath();ctx.moveTo(px(v)+.5,P.t);ctx.lineTo(px(v)+.5,P.t+ph);ctx.stroke();ctx.fillText(+v.toFixed(3),px(v),P.t+ph+15)});
+  ctx.textAlign='right';
+  ticks(y0,y1).forEach(v=>{ctx.strokeStyle=T.grid;ctx.beginPath();ctx.moveTo(P.l,py(v)+.5);ctx.lineTo(P.l+pw,py(v)+.5);ctx.stroke();
+    const L=ylog?(Math.pow(10,v)<10?Math.pow(10,v).toFixed(1):Math.round(Math.pow(10,v))):+v.toFixed(3);ctx.fillText(L,P.l-7,py(v)+4)});
+  ctx.fillStyle=T.ink2;ctx.textAlign='center';
+  ctx.font=xmath?'italic 14px '+css('--math'):'12px '+T.sans;ctx.fillText(xl,P.l+pw/2,H-3);
+  ctx.font=ymath?'italic 14px '+css('--math'):'12px '+T.sans;ctx.save();ctx.translate(12,P.t+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText(yl,0,0);ctx.restore();
+  return{px,py,pw,ph}}
+function clip(ctx,a){ctx.save();ctx.beginPath();ctx.rect(P.l,P.t,a.pw,a.ph);ctx.clip()}
+function dot(ctx,x,y){ctx.fillStyle=T.path;ctx.strokeStyle=T.panel;ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,6,0,7);ctx.fill();ctx.stroke()}
+function cross(ctx,x,y){ctx.strokeStyle=T.ink;ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x-6,y-6);ctx.lineTo(x+6,y+6);ctx.moveTo(x+6,y-6);ctx.lineTo(x-6,y+6);ctx.stroke()}
+
+function drawData(){const[ctx,Wd,H]=setup($('c1'));const a=axes(ctx,Wd,H,4,24,-6,26,t('axPop'),t('axProfit'));clip(ctx,a);
+  if($('cres').checked){ctx.strokeStyle=T.mute;ctx.globalAlpha=.55;ctx.setLineDash([3,3]);for(let i=0;i<m;i++){ctx.beginPath();ctx.moveTo(a.px(X[i]),a.py(Y[i]));ctx.lineTo(a.px(X[i]),a.py(w*X[i]+b));ctx.stroke()}ctx.setLineDash([]);ctx.globalAlpha=1}
+  const c=hex(T.data);ctx.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},.8)`;ctx.strokeStyle=T.panel;ctx.lineWidth=1;
+  for(let i=0;i<m;i++){ctx.beginPath();ctx.arc(a.px(X[i]),a.py(Y[i]),3.6,0,7);ctx.fill();ctx.stroke()}
+  ctx.strokeStyle=T.model;ctx.lineWidth=2.5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(a.px(4),a.py(w*4+b));ctx.lineTo(a.px(24),a.py(w*24+b));ctx.stroke();ctx.restore()}
+
+let bg=null;
+function makeBg(pw,ph){const nx=Math.max(100,Math.round(pw/1.5)),ny=Math.max(80,Math.round(ph/1.5)),off=document.createElement('canvas');off.width=nx;off.height=ny;
+  const o=off.getContext('2d'),img=o.createImageData(nx,ny),L=new Float32Array(nx*ny);let lo=1e9,hi=-1e9;
+  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){const v=Math.log(cost(W0+(i+.5)/nx*(W1-W0),B1-(j+.5)/ny*(B1-B0)));L[j*nx+i]=v;if(v<lo)lo=v;if(v>hi)hi=v}
+  const nb=16,band=v=>Math.floor((v-lo)/(hi-lo)*nb);
+  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){const k=j*nx+i,bk=band(L[k]);let u=Math.pow(bk/nb,0.85);
+    const edge=(i>0&&band(L[k-1])!==bk)||(j>0&&band(L[k-nx])!==bk);if(edge)u=Math.min(1,u+.22);
+    const c=mix(T.lo,T.hi,u);img.data.set([c[0],c[1],c[2],255],k*4)}
+  o.putImageData(img,0,0);return off}
+function drawContour(){const[ctx,Wd,H]=setup($('c2')),pw=Wd-P.l-P.r,ph=H-P.t-P.bt,key=pw+'x'+ph+T.lo;
+  if(!bg||bg.key!==key)bg={c:makeBg(pw,ph),key};
+  ctx.save();ctx.beginPath();ctx.roundRect?ctx.roundRect(P.l,P.t,pw,ph,6):ctx.rect(P.l,P.t,pw,ph);ctx.clip();ctx.imageSmoothingEnabled=true;ctx.drawImage(bg.c,P.l,P.t,pw,ph);ctx.restore();
+  const a=axes(ctx,Wd,H,W0,W1,B0,B1,'w','b',false,true,true);
+  ctx.save();ctx.beginPath();ctx.roundRect?ctx.roundRect(P.l,P.t,pw,ph,6):ctx.rect(P.l,P.t,pw,ph);ctx.clip();ctx.drawImage(bg.c,P.l,P.t,pw,ph);ctx.restore();
+  clip(ctx,a);cross(ctx,a.px(wOpt),a.py(bOpt));
+  ctx.strokeStyle=T.path;ctx.lineWidth=2.4;ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();const st=Math.max(1,Math.floor(path.length/900));
+  path.forEach((p,i)=>{if(i%st&&i!==path.length-1)return;const x=a.px(p[0]),y=a.py(p[1]);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke();
+  dot(ctx,a.px(w),a.py(b));ctx.restore()}
+
+const NG=30,SG=[];let Jmax=0;
+for(let j=0;j<=NG;j++){SG.push([]);for(let i=0;i<=NG;i++){const v=cost(W0+i/NG*(W1-W0),B0+j/NG*(B1-B0));SG[j].push(v);if(v>Jmax)Jmax=v}}
+function proj(u,v,z,cx,cy,S){const x=u*Math.cos(az)-v*Math.sin(az),y=u*Math.sin(az)+v*Math.cos(az);return[cx+x*S,cy-(z*Math.cos(el)-y*Math.sin(el))*S]}
+const zOf=J=>Math.min(J,Jmax)/Jmax*0.75-0.3;
+function drawSurf(){const[ctx,Wd,H]=setup($('c3'));const cx=Wd/2,cy=H/2+14,S=Math.min(Wd,H)*0.8;
+  const P3=(i,j)=>proj(i/NG-.5,j/NG-.5,zOf(SG[j][i]),cx,cy,S);
+  const fl=[[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]].map(c=>proj(c[0],c[1],-.3,cx,cy,S));
+  ctx.fillStyle=T.grid;ctx.strokeStyle=T.rule;ctx.lineWidth=1;ctx.beginPath();fl.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fill();ctx.stroke();
+  for(let j=0;j<=NG;j++)for(let i=0;i<=NG;i++){
+    const p=P3(i,j),u=Math.min(SG[j][i],Jmax)/Jmax,c=mix(T.model,T.hi,u);ctx.strokeStyle=`rgba(${c[0]},${c[1]},${c[2]},${0.35+0.35*(1-u)})`;
+    if(i<NG){const q=P3(i+1,j);ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke()}
+    if(j<NG){const q=P3(i,j+1);ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke()}}
+  const pp=(ww,bb)=>proj((ww-W0)/(W1-W0)-.5,(bb-B0)/(B1-B0)-.5,zOf(cost(ww,bb)),cx,cy,S);
+  ctx.strokeStyle=T.path;ctx.lineWidth=2.6;ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();const st=Math.max(1,Math.floor(path.length/600));let started=false;
+  path.forEach((p,i)=>{if(i%st&&i!==path.length-1)return;if(p[0]<W0||p[0]>W1||p[1]<B0||p[1]>B1)return;const q=pp(p[0],p[1]);started?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);started=true});ctx.stroke();
+  const o=pp(wOpt,bOpt);cross(ctx,o[0],o[1]);
+  if(w>=W0&&w<=W1&&b>=B0&&b<=B1){const c=pp(w,b);dot(ctx,c[0],c[1])}
+  ctx.fillStyle=T.ink2;ctx.font='italic 15px '+css('--math');ctx.textAlign='center';
+  const lw=proj(0,-.64,-.3,cx,cy,S),lb=proj(.64,0,-.3,cx,cy,S),lj=proj(-.5,-.5,.5,cx,cy,S);
+  ctx.fillText('w',lw[0],lw[1]);ctx.fillText('b',lb[0],lb[1]);ctx.fillText('J',lj[0]-10,lj[1])}
+
+function drawCost(){const[ctx,Wd,H]=setup($('c4'));const lh=hist.filter(isFinite).map(v=>Math.log10(Math.max(v,1e-6)));
+  let y0=Math.min(...lh,Math.log10(JOpt)),y1=Math.max(...lh);const pad=(y1-y0)*.08||.1;y0-=pad;y1+=pad;
+  const n=Math.max(10,hist.length-1),a=axes(ctx,Wd,H,0,n,y0,y1,t('axIter'),'J',true,false,true);clip(ctx,a);
+  ctx.strokeStyle=T.mute;ctx.setLineDash([4,4]);ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(P.l,a.py(Math.log10(JOpt)));ctx.lineTo(P.l+a.pw,a.py(Math.log10(JOpt)));ctx.stroke();ctx.setLineDash([]);
+  const c=hex(T.model),st=Math.max(1,Math.floor(lh.length/1200)),pts=[];
+  lh.forEach((v,i)=>{if(i%st&&i!==lh.length-1)return;pts.push([a.px(i),a.py(v)])});
+  ctx.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},.1)`;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
+  if(pts.length){ctx.lineTo(pts[pts.length-1][0],P.t+a.ph);ctx.lineTo(pts[0][0],P.t+a.ph);ctx.closePath();ctx.fill()}
+  ctx.strokeStyle=T.model;ctx.lineWidth=2.2;ctx.lineJoin='round';ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();
+  if(pts.length){const l=pts[pts.length-1];ctx.fillStyle=T.model;ctx.strokeStyle=T.panel;ctx.lineWidth=2;ctx.beginPath();ctx.arc(l[0],l[1],4.5,0,7);ctx.fill();ctx.stroke()}
+  ctx.restore()}
+
+const fmt=v=>!isFinite(v)?'∞':Math.abs(v)>=1e5?v.toExponential(2):v.toFixed(Math.abs(v)<10?3:1);
+function prog(el){el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%')}
+function ui(){const J=cost(w,b),[dw,db]=grad(w,b);
+  $('eqw').textContent=w.toFixed(2);$('eqs').textContent=b<0?'−':'+';$('eqb').textContent=Math.abs(b).toFixed(2);
+  $('rJ').textContent=fmt(J);$('rI').textContent=it;$('rMin').textContent=JOpt.toFixed(3);$('rdw').textContent=fmt(dw);$('rdb').textContent=fmt(db);
+  $('ow').textContent=w.toFixed(2);$('ob').textContent=b.toFixed(2);
+  $('sw').value=Math.max(W0,Math.min(W1,w));$('sb').value=Math.max(B0,Math.min(B1,b));['sw','sb','sa','ss'].forEach(id=>prog($(id)))}
+function draw(){drawData();drawContour();drawSurf();drawCost();ui()}
+function showWarn(on){$('warn').classList.toggle('on',on);$('warn').textContent=on?t('warn'):''}
+function step(){const a=+$('sa').value,[dw,db]=grad(w,b);w-=a*dw;b-=a*db;it++;path.push([w,b]);const J=cost(w,b);hist.push(J);
+  if(!isFinite(J)||J>1e8){stop();showWarn(true);return false}return true}
+const PLAY='<path d="M7 4.5v15l13-7.5z"/>',PAUSE='<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+function stop(){running=false;$('trun').textContent=t('run');$('irun').innerHTML=PLAY}
+function loop(){if(!running)return;const k=+$('ss').value;for(let i=0;i<k;i++)if(!step())break;draw();if(running)requestAnimationFrame(loop)}
+function setWB(nw,nb){stop();w=nw;b=nb;it=0;path=[[w,b]];hist=[cost(w,b)];showWarn(false);draw()}
+$('brun').onclick=()=>{if(running){stop();return}running=true;showWarn(false);$('trun').textContent=t('pause');$('irun').innerHTML=PAUSE;loop()};
+$('bstep').onclick=()=>{stop();step();draw()};
+$('breset').onclick=()=>setWB(0,0);
+$('sw').oninput=e=>setWB(+e.target.value,b);
+$('sb').oninput=e=>setWB(w,+e.target.value);
+$('sa').oninput=e=>{$('oa').textContent=(+e.target.value).toFixed(3);prog(e.target)};
+$('ss').oninput=e=>{$('os').textContent=e.target.value;prog(e.target)};
+$('cres').onchange=draw;
+$('c2').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect(),pw=r.width-P.l-P.r,ph=r.height-P.t-P.bt,x=(e.clientX-r.left-P.l)/pw,y=(e.clientY-r.top-P.t)/ph;if(x<0||x>1||y<0||y>1)return;setWB(W0+x*(W1-W0),B1-y*(B1-B0))});
+let drag=null;const c3=$('c3');
+c3.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY,az,el];c3.setPointerCapture(e.pointerId);c3.style.cursor='grabbing'});
+c3.addEventListener('pointermove',e=>{if(!drag)return;az=drag[2]+(e.clientX-drag[0])*0.01;el=Math.max(0.05,Math.min(1.5,drag[3]+(e.clientY-drag[1])*0.01));drawSurf()});
+const end=()=>{drag=null;c3.style.cursor='grab'};c3.addEventListener('pointerup',end);c3.addEventListener('pointercancel',end);
+$('blang').onclick=()=>{lang=lang==='pt'?'en':'pt';store.set('rl-lang',lang);applyLang()};
+$('btheme').onclick=()=>{themeMode=themeMode==='auto'?'light':themeMode==='light'?'dark':'auto';store.set('rl-theme',themeMode);applyTheme()};
+document.querySelectorAll('textarea[data-k]').forEach(ta=>{ta.value=store.get('rl-pred-'+ta.dataset.k)||'';ta.addEventListener('input',()=>store.set('rl-pred-'+ta.dataset.k,ta.value))});
+const refresh=()=>{theme();bg=null;draw()};
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',refresh);
+new MutationObserver(refresh).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+let rt;new ResizeObserver(()=>{clearTimeout(rt);rt=setTimeout(()=>{bg=null;draw()},60)}).observe(document.querySelector('.figs'));
+applyTheme();theme();applyLang();draw();
+if(document.fonts)document.fonts.ready.then(refresh);
+</script>
+</body>
+</html>
