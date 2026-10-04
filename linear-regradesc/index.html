@@ -9,22 +9,22 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F2F4F7;--panel:#FFFFFF;--panel2:#F7F9FB;--ink:#121A24;--ink2:#47546A;--mute:#7C889B;--rule:#DCE2EA;--grid:#E9EDF2;
-  --accent:#2F55D4;--accent-ink:#FFFFFF;--accent-soft:#E6ECFC;
-  --data:#E0533D;--model:#2F55D4;--path:#E39A0E;--lo:#F1F5FC;--hi:#24439F;--danger:#C0352B;--danger-soft:#FCEBE9;
+  --bg:#FAF6F6;--panel:#FFFFFF;--panel2:#FCF9F9;--ink:#2A3A42;--ink2:#455B66;--mute:#77858C;--rule:#ECE3E4;--grid:#F3EEEF;
+  --accent:#D23C49;--accent-ink:#FFFFFF;--accent-soft:#FDE8EA;
+  --data:#F2838B;--model:#5E8CA3;--path:#E38B4F;--lo:#FCF6F5;--hi:#8FA8B5;--danger:#C9434E;--danger-soft:#FDECEE;
   --math:"STIX Two Text","Cambria Math",Cambria,"Times New Roman",serif;
   --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --r-lg:16px;--r-md:10px;--r-sm:7px;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0C1117;--panel:#141B23;--panel2:#18212B;--ink:#E7ECF2;--ink2:#A9B5C4;--mute:#76839A;--rule:#26313D;--grid:#1E2832;
-  --accent:#7D9BFF;--accent-ink:#0C1117;--accent-soft:#1C2742;
-  --data:#FF7A63;--model:#7D9BFF;--path:#F5B53D;--lo:#121A26;--hi:#8EA9FF;--danger:#FF8A7E;--danger-soft:#3A1D1B;}}
+  --bg:#1B2226;--panel:#222B30;--panel2:#273137;--ink:#EEF1F2;--ink2:#B6C3C9;--mute:#85949B;--rule:#34414A;--grid:#2B363D;
+  --accent:#F58D95;--accent-ink:#1B2226;--accent-soft:#3A2A2E;
+  --data:#F49AA1;--model:#9CC0D2;--path:#F2B98A;--lo:#20292E;--hi:#A3BCC8;--danger:#F49AA1;--danger-soft:#3A2A2E;}}
 :root[data-theme="dark"]{
-  --bg:#0C1117;--panel:#141B23;--panel2:#18212B;--ink:#E7ECF2;--ink2:#A9B5C4;--mute:#76839A;--rule:#26313D;--grid:#1E2832;
-  --accent:#7D9BFF;--accent-ink:#0C1117;--accent-soft:#1C2742;
-  --data:#FF7A63;--model:#7D9BFF;--path:#F5B53D;--lo:#121A26;--hi:#8EA9FF;--danger:#FF8A7E;--danger-soft:#3A1D1B;}
+  --bg:#1B2226;--panel:#222B30;--panel2:#273137;--ink:#EEF1F2;--ink2:#B6C3C9;--mute:#85949B;--rule:#34414A;--grid:#2B363D;
+  --accent:#F58D95;--accent-ink:#1B2226;--accent-soft:#3A2A2E;
+  --data:#F49AA1;--model:#9CC0D2;--path:#F2B98A;--lo:#20292E;--hi:#A3BCC8;--danger:#F49AA1;--danger-soft:#3A2A2E;}
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -113,7 +113,25 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .steps p i{font-family:var(--math);font-size:16px}
 .steps textarea{grid-column:2;width:100%;min-height:62px;resize:vertical;font:inherit;font-size:14px;color:var(--ink);background:var(--panel2);border:1px solid var(--rule);border-radius:var(--r-sm);padding:8px 10px}
 .steps textarea::placeholder{color:var(--mute)}
-footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute);max-width:90ch}
+footer{margin-top:40px;border-top:1px solid var(--rule);padding-top:4px}
+.info summary{list-style:none;display:flex;align-items:center;gap:10px;padding:12px 2px;cursor:pointer;font-size:13px;color:var(--ink2);border-radius:var(--r-sm)}
+.info summary::-webkit-details-marker{display:none}
+.info summary:hover{color:var(--ink)}
+.info summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.info .ic{width:16px;height:16px;flex:none;color:var(--mute)}
+.info .ttl{font-weight:500}
+.info .sub{color:var(--mute)}
+.info .chev{width:14px;height:14px;margin-left:auto;color:var(--mute);transition:transform .2s}
+.info[open] .chev{transform:rotate(180deg)}
+.spec{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:var(--r-md);overflow:hidden;margin:2px 0 10px}
+@media (max-width:720px){.spec{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.spec div{background:var(--panel);padding:10px 12px}
+.spec dt{font-size:11.5px;color:var(--mute);margin:0 0 2px}
+.spec dd{margin:0;font-size:13.5px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink)}
+.info p{margin:0 2px 14px;font-size:13px;color:var(--mute)}
+.pill{font:inherit;font-size:11.5px;font-weight:500;display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:2px 8px 2px 6px;border-radius:999px;border:1px solid var(--rule);background:var(--panel2);color:var(--ink2);cursor:pointer;transition:border-color .15s,color .15s}
+.pill:hover{border-color:var(--mute);color:var(--ink)}
+.pill svg{width:12px;height:12px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -171,7 +189,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
 
 <div class="figs">
   <figure>
-    <div class="fh"><div><h3 data-i18n="f1">Dados e modelo</h3><p data-i18n-html="f1s">Cada tracejado é um erro <em>f</em>(<em>x</em>⁽ⁱ⁾) − <em>y</em>⁽ⁱ⁾</p></div>
+    <div class="fh"><div><h3 data-i18n="f1">Dados e modelo</h3><p data-i18n-html="f1s">Cada tracejado é um erro <em>f</em>(<em>x</em>⁽ⁱ⁾) − <em>y</em>⁽ⁱ⁾</p><button class="pill" id="bdata" type="button" aria-controls="dataInfo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span data-i18n="pill">Dados sintéticos</span></button></div>
       <div class="lg"><span><i style="background:var(--data)"></i><b data-i18n="lgData" style="font-weight:400">dados</b></span><span><i style="background:var(--model)"></i><b data-i18n="lgModel" style="font-weight:400">modelo</b></span></div></div>
     <div class="cv"><canvas id="c1" role="img" aria-label="Scatter plot with model line"></canvas></div>
   </figure>
@@ -203,7 +221,22 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
   </ol>
 </section>
 
-<footer data-i18n="note">Os 97 pontos são sintéticos, gerados com distribuição parecida com a do dataset do lab (população entre 5 e 22,5 em unidades de 10.000; lucro médio mensal em unidades de $10.000). Os números não batem exatamente com os do notebook, mas o comportamento do algoritmo é o mesmo.</footer>
+<footer>
+<details class="info" id="dataInfo">
+  <summary>
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>
+    <span class="ttl" data-i18n="aboutT">Sobre os dados</span><span class="sub" data-i18n="aboutS">97 pontos sintéticos</span>
+    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </summary>
+  <dl class="spec">
+    <div><dt data-i18n="sPtsK">Pontos</dt><dd>97</dd></div>
+    <div><dt data-i18n="sPopK">População</dt><dd data-i18n="sPopV">5 – 22,5 (×10.000)</dd></div>
+    <div><dt data-i18n="sProK">Lucro</dt><dd data-i18n="sProV">Média mensal (×$10.000)</dd></div>
+    <div><dt data-i18n="sSrcK">Origem</dt><dd data-i18n="sSrcV">Similar ao dataset do lab</dd></div>
+  </dl>
+  <p data-i18n="aboutN">Os valores não coincidem com os do notebook, mas o comportamento do algoritmo é o mesmo.</p>
+</details>
+</footer>
 </div>
 
 <script>
@@ -221,7 +254,7 @@ e2t:"Um ponto, uma reta",e2:"Clique em lugares distantes no mapa de contorno. An
 e3t:"A trajetória",e3:"Reinicie e rode a descida com <i>α</i> = 0,010. Por que o caminho não vai em linha reta até o mínimo? Compare as fórmulas de ∂J/∂w e ∂J/∂b antes de responder.",
 e4t:"O limite do α",e4:"Preveja o que acontece com <i>α</i> = 0,025 e só então teste. Encontre o maior <i>α</i> que ainda converge.",
 note:"Os 97 pontos são sintéticos, gerados com distribuição parecida com a do dataset do lab (população entre 5 e 22,5 em unidades de 10.000; lucro médio mensal em unidades de $10.000). Os números não batem exatamente com os do notebook, mas o comportamento do algoritmo é o mesmo.",
-langBtn:"English",back:"Portfólio",themeAuto:"Tema automático",themeLight:"Tema claro",themeDark:"Tema escuro"},
+langBtn:"English",back:"Portfólio",pill:"Dados sintéticos",aboutT:"Sobre os dados",aboutS:"97 pontos sintéticos",sPtsK:"Pontos",sPopK:"População",sPopV:"5 – 22,5 (×10.000)",sProK:"Lucro",sProV:"Média mensal (×$10.000)",sSrcK:"Origem",sSrcV:"Similar ao dataset do lab",aboutN:"Os valores não coincidem com os do notebook, mas o comportamento do algoritmo é o mesmo.",themeAuto:"Tema automático",themeLight:"Tema claro",themeDark:"Tema escuro"},
 en:{brand:"Regression lab",title:"Linear regression with gradient descent",sub:"One model, one cost function, and the algorithm that minimizes it, all at once. Change any of them and watch the others respond.",
 cost:"Cost J",iter:"Iteration",jmin:"Minimum of J",params:"Model parameters",slope:"Slope",icpt:"Intercept",gd:"Gradient descent",lr:"Learning rate",speed:"Iterations per frame",
 run:"Run descent",pause:"Pause",step:"One step",reset:"Reset",res:"Show residuals",
@@ -235,7 +268,7 @@ e2t:"One point, one line",e2:"Click far-apart spots on the contour map. Before e
 e3t:"The path",e3:"Reset and run the descent with <i>α</i> = 0.010. Why doesn't the path head straight to the minimum? Compare the formulas for ∂J/∂w and ∂J/∂b before answering.",
 e4t:"The limit of α",e4:"Predict what happens with <i>α</i> = 0.025, then test it. Find the largest <i>α</i> that still converges.",
 note:"The 97 points are synthetic, generated with a distribution similar to the lab's dataset (population between 5 and 22.5 in units of 10,000; average monthly profit in units of $10,000). The numbers won't match the notebook exactly, but the algorithm behaves the same way.",
-langBtn:"Português",back:"Portfolio",themeAuto:"Auto theme",themeLight:"Light theme",themeDark:"Dark theme"}};
+langBtn:"Português",back:"Portfolio",pill:"Synthetic data",aboutT:"About the data",aboutS:"97 synthetic points",sPtsK:"Points",sPopK:"Population",sPopV:"5 – 22.5 (×10,000)",sProK:"Profit",sProV:"Monthly average (×$10,000)",sSrcK:"Source",sSrcV:"Similar to the lab dataset",aboutN:"Values won't match the notebook, but the algorithm behaves the same way.",themeAuto:"Auto theme",themeLight:"Light theme",themeDark:"Dark theme"}};
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 let lang=store.get('rl-lang')==='pt'?'pt':'en',themeMode=store.get('rl-theme')||'auto';
 const t=k=>I18N[lang][k];
@@ -362,6 +395,7 @@ $('sb').oninput=e=>setWB(w,+e.target.value);
 $('sa').oninput=e=>{$('oa').textContent=(+e.target.value).toFixed(3);prog(e.target)};
 $('ss').oninput=e=>{$('os').textContent=e.target.value;prog(e.target)};
 $('cres').onchange=draw;
+$('bdata').onclick=()=>{const d=$('dataInfo');d.open=true;d.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});d.querySelector('summary').focus({preventScroll:true})};
 $('c2').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect(),pw=r.width-P.l-P.r,ph=r.height-P.t-P.bt,x=(e.clientX-r.left-P.l)/pw,y=(e.clientY-r.top-P.t)/ph;if(x<0||x>1||y<0||y>1)return;setWB(W0+x*(W1-W0),B1-y*(B1-B0))});
 let drag=null;const c3=$('c3');
 c3.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY,az,el];c3.setPointerCapture(e.pointerId);c3.style.cursor='grabbing'});
