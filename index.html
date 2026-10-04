@@ -157,6 +157,11 @@
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px;
   }
   .skill-card h4{margin:0 0 14px; font-size:.95rem; display:flex; align-items:center; gap:10px;}
+  /* Ícones das skills: Tabler Icons (MIT) — https://tabler.io/icons */
+  .skill-tile{width:34px; height:34px; flex:none; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    background:rgba(94,234,212,.10); border:1px solid rgba(94,234,212,.22); color:var(--accent);}
+  [data-theme="light"] .skill-tile{background:rgba(13,148,136,.08); border-color:rgba(13,148,136,.22); color:#0f766e;}
+  .skill-ic{width:18px; height:18px;}
   .badge-row{display:flex; flex-wrap:wrap; gap:8px;}
   .badge{
     font-size:.78rem; padding:6px 11px; border-radius:999px; border:1px solid var(--border);
@@ -309,7 +314,7 @@
     </div>
     <div class="skills-grid">
       <div class="skill-card">
-        <h4 data-i18n="skill_cat1">📊 Dados &amp; Análise</h4>
+        <h4><span class="skill-tile"><svg class="skill-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><circle cx="9" cy="9" r="2"/><circle cx="19" cy="7" r="2"/><circle cx="14" cy="15" r="2"/><path d="M10.16 10.62l2.34 2.88"/><path d="M15.088 13.328l2.837 -4.586"/></svg></span><span data-i18n="skill_cat1">Dados &amp; Análise</span></h4>
         <div class="badge-row">
           <span class="badge learning">Python</span>
           <span class="badge learning">SQL</span>
@@ -317,21 +322,21 @@
         </div>
       </div>
       <div class="skill-card">
-        <h4 data-i18n="skill_cat2">🤖 Machine Learning</h4>
+        <h4><span class="skill-tile"><svg class="skill-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19a2 2 0 0 0 2 2c2 0 2 -4 3 -9s1 -9 3 -9a2 2 0 0 1 2 2"/><path d="M5 12h6"/><path d="M15 12l6 6"/><path d="M15 18l6 -6"/></svg></span><span data-i18n="skill_cat2">Machine Learning</span></h4>
         <div class="badge-row">
           <span class="badge learning" data-i18n="skill_regclass">Regressão &amp; Classificação</span>
           <span class="badge learning">scikit-learn</span>
         </div>
       </div>
       <div class="skill-card">
-        <h4 data-i18n="skill_cat3">⚙️ Engenharia de Dados</h4>
+        <h4><span class="skill-tile"><svg class="skill-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6a8 3 0 0 0 16 0v-6"/><path d="M4 12v6a8 3 0 0 0 16 0v-6"/></svg></span><span data-i18n="skill_cat3">Engenharia de Dados</span></h4>
         <div class="badge-row">
           <span class="badge learning" data-i18n="skill_pipelines">Pipelines de Dados</span>
           <span class="badge learning">ETL</span>
         </div>
       </div>
       <div class="skill-card">
-        <h4 data-i18n="skill_cat4">🚀 MLOps &amp; Infra</h4>
+        <h4><span class="skill-tile"><svg class="skill-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.828 9.172a4 4 0 1 0 0 5.656a10 10 0 0 0 2.172 -2.828a10 10 0 0 1 2.172 -2.828a4 4 0 1 1 0 5.656a10 10 0 0 1 -2.172 -2.828a10 10 0 0 0 -2.172 -2.828"/></svg></span><span data-i18n="skill_cat4">MLOps &amp; Infra</span></h4>
         <div class="badge-row">
           <span class="badge learning" data-i18n="skill_git">Versionamento (Git)</span>
           <span class="badge learning">Docker</span>
@@ -346,7 +351,7 @@
     <div class="section-head">
       <span class="section-tag" data-i18n="projetos_tag">Projetos</span>
       <h2 class="section-title" data-i18n="projetos_title">Projetos &amp; exercícios aplicados</h2>
-      <p class="section-desc" data-i18n="projetos_desc">Cada card abaixo vem de um único lugar no código — veja o comentário "ADICIONE SEUS PROJETOS AQUI" perto do fim do arquivo.</p>
+      <p class="section-desc" data-i18n="projetos_desc">Projetos e ferramentas que construo ao longo dos estudos — da visualização de conceitos a pipelines de ponta a ponta.</p>
     </div>
     <div class="projects-grid" id="projectsGrid"></div>
   </section>
@@ -436,12 +441,12 @@
       jornada_desc: "Atualizo esta linha conforme avanço — o objetivo é mostrar o caminho, não só o resultado final.",
       skills_tag: "Skills", skills_title: "O que já domino e o que estou construindo",
       skills_desc: "Classificação honesta por nível — atualizada conforme avanço nos cursos e projetos.",
-      skill_cat1: "📊 Dados & Análise", skill_cat2: "🤖 Machine Learning",
-      skill_cat3: "⚙️ Engenharia de Dados", skill_cat4: "🚀 MLOps & Infra",
+      skill_cat1: "Dados & Análise", skill_cat2: "Machine Learning",
+      skill_cat3: "Engenharia de Dados", skill_cat4: "MLOps & Infra",
       skill_eda: "Análise Exploratória", skill_regclass: "Regressão & Classificação",
       skill_pipelines: "Pipelines de Dados", skill_git: "Versionamento (Git)",
       projetos_tag: "Projetos", projetos_title: "Projetos & exercícios aplicados",
-      projetos_desc: 'Cada card abaixo vem de um único lugar no código — veja o comentário "ADICIONE SEUS PROJETOS AQUI" perto do fim do arquivo.',
+      projetos_desc: 'Projetos e ferramentas que construo ao longo dos estudos — da visualização de conceitos a pipelines de ponta a ponta.',
       projeto_empty: 'Seu primeiro projeto vai aparecer aqui. Edite o array <code class="mono">projetos</code> no final deste arquivo para adicioná-lo.',
       link_codigo: "Código →", link_demo: "Demo →",
       contato_tag: "Contato", contato_title: "Vamos conversar sobre dados, ML ou oportunidades",
@@ -475,12 +480,12 @@
       jornada_desc: "I update this line as I move forward — the goal is to show the path, not just the end result.",
       skills_tag: "Skills", skills_title: "What I already know, and what I'm building",
       skills_desc: "Honest self-rating — updated as I progress through courses and projects.",
-      skill_cat1: "📊 Data & Analysis", skill_cat2: "🤖 Machine Learning",
-      skill_cat3: "⚙️ Data Engineering", skill_cat4: "🚀 MLOps & Infra",
+      skill_cat1: "Data & Analysis", skill_cat2: "Machine Learning",
+      skill_cat3: "Data Engineering", skill_cat4: "MLOps & Infra",
       skill_eda: "Exploratory Analysis", skill_regclass: "Regression & Classification",
       skill_pipelines: "Data Pipelines", skill_git: "Versioning (Git)",
       projetos_tag: "Projects", projetos_title: "Projects & applied exercises",
-      projetos_desc: 'Every card below comes from a single place in the code — see the "ADD YOUR PROJECTS HERE" comment near the end of the file.',
+      projetos_desc: 'Projects and tools I build along my learning path — from concept visualizations to end-to-end pipelines.',
       projeto_empty: 'Your first project will show up here. Edit the <code class="mono">projetos</code> array near the end of this file to add it.',
       link_codigo: "Code →", link_demo: "Demo →",
       contato_tag: "Contact", contato_title: "Let's talk about data, ML or opportunities",
