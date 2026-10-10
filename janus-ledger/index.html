@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Janus Ledger — double-entry personal finance app</title>
+<meta name="description" content="A personal finance web app that replaced GnuCash: double-entry bookkeeping, quick entry from the phone, dashboard and reports. Django, PostgreSQL, HTMX, PWA.">
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #fbf8f3; --surface: #fffdf9; --ink: #3c4250; --muted: #646c79; --line: #e4ddd2;
+    --blue: #6f9fd3; --blue-ink: #3f72b0; --blue-soft: #dce9f6; --green-soft: #d6eddf; --peach-soft: #fbe3d4;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.6;
+         font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--blue-ink); }
+  .wrap { max-width: 68rem; margin: 0 auto; padding: 0 1rem; }
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; font-size: .92rem; }
+  .top a { text-decoration: none; }
+  .lang { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 2rem;
+          padding: .3rem .8rem; font: inherit; cursor: pointer; }
+  header.hero { text-align: center; padding: 2.5rem 0 1.5rem; }
+  .blocks { width: min(14rem, 60vw); height: auto; }
+  h1 { font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif; font-weight: 300;
+       color: var(--blue); font-size: clamp(2.2rem, 7vw, 3.4rem); letter-spacing: .04em; margin: .5rem 0 .25rem; }
+  .tagline { font-size: 1.1rem; color: var(--muted); max-width: 40rem; margin: 0 auto; }
+  .chips { display: flex; flex-wrap: wrap; gap: .4rem; justify-content: center; margin: 1.25rem 0 0; padding: 0; list-style: none; }
+  .chips li { background: var(--surface); border: 1px solid var(--line); border-radius: 2rem; padding: .2rem .75rem; font-size: .85rem; }
+  .note { margin: 1.5rem auto 0; max-width: 40rem; font-size: .85rem; color: var(--muted); background: var(--blue-soft);
+          border-radius: .75rem; padding: .6rem .9rem; text-align: center; }
+  section { padding: 2.5rem 0 0; }
+  h2 { font-size: 1.35rem; margin: 0 0 .25rem; }
+  .lead { color: var(--muted); margin: 0 0 1.25rem; }
+  .shot { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 1rem; overflow: hidden;
+          box-shadow: 0 18px 40px -28px rgb(31 59 92 / .35); }
+  .shot img { display: block; width: 100%; height: auto; }
+  figure { margin: 0; }
+  figcaption { font-size: .88rem; color: var(--muted); margin-top: .5rem; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .phones { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .phones .shot { border-radius: 1.5rem; }
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .feature { background: var(--surface); border: 1px solid var(--line); border-radius: 1rem; padding: 1rem 1.1rem; }
+  .feature h3 { font-size: 1rem; margin: 0 0 .3rem; }
+  .feature p { margin: 0; font-size: .92rem; color: var(--muted); }
+  .feature:nth-child(3n+1) { background: linear-gradient(var(--blue-soft), var(--surface) 60%); }
+  .feature:nth-child(3n+2) { background: linear-gradient(var(--green-soft), var(--surface) 60%); }
+  .feature:nth-child(3n) { background: linear-gradient(var(--peach-soft), var(--surface) 60%); }
+  footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 3rem 0 2rem; }
+  @media (max-width: 800px) {
+    .grid-2, .features { grid-template-columns: 1fr; }
+    .phones { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top">
+    <a href="../" data-i18n="back">← Portfolio</a>
+    <button class="lang" type="button" id="langBtn" aria-label="Switch language">PT</button>
+  </nav>
+
+  <header class="hero">
+    <svg class="blocks" viewBox="0 0 400 320" role="img" aria-hidden="true">
+    <defs>
+      
+      <filter id="aquarela" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="ruido"/>
+        <feDisplacementMap in="SourceGraphic" in2="ruido" scale="7" xChannelSelector="R" yChannelSelector="G" result="borda"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.05" numOctaves="3" seed="9" result="manchas"/>
+        <feColorMatrix in="manchas" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0.35" result="alfa"/>
+        <feComposite in="borda" in2="alfa" operator="in" result="tinta"/>
+        <feMorphology in="borda" operator="erode" radius="2.5" result="miolo"/>
+        <feComposite in="borda" in2="miolo" operator="out" result="contorno"/>
+        <feGaussianBlur in="contorno" stdDeviation="0.8" result="contornoSuave"/>
+        <feMerge><feMergeNode in="tinta"/><feMergeNode in="contornoSuave"/></feMerge>
+      </filter>
+    </defs>
+    <g filter="url(#aquarela)" style="mix-blend-mode: multiply">
+      <rect x="70" y="220" width="90" height="80" fill="#9cc3e6"/>
+      <path d="M165 300 V220 H295 V300 H262 A32 32 0 0 0 198 300 Z" fill="#f5d78e"/>
+      <rect x="300" y="240" width="60" height="60" fill="#f2b5c4"/>
+      <rect x="90" y="188" width="240" height="32" fill="#b5dcc5"/>
+      <path d="M150 188 L210 110 L270 188 Z" fill="#c9b8e8"/>
+      <rect x="282" y="146" width="40" height="40" fill="#f6c3a3" transform="rotate(-7 302 166)"/>
+    </g>
+  </svg>
+    <h1>Janus Ledger</h1>
+    <p class="tagline" data-i18n="tagline">A personal finance web app that replaced GnuCash: double-entry bookkeeping, built so every expense can be logged in seconds, right from the phone.</p>
+    <ul class="chips">
+      <li>Python</li><li>Django 5.2</li><li>PostgreSQL</li><li>HTMX</li><li>PWA</li><li>Chart.js</li>
+      <li>Gunicorn · Nginx</li><li>AWS Lightsail</li><li>Let's Encrypt</li>
+    </ul>
+    <p class="note" data-i18n="note">The source code is private: this app holds real personal financial data. All screenshots use fictitious sample data.</p>
+  </header>
+
+  <section>
+    <h2 data-i18n="dash_t">Dashboard</h2>
+    <p class="lead" data-i18n="dash_d">Net worth, income vs. spending, spending by category, upcoming installments and alerts — in one screen.</p>
+    <figure>
+      <a class="shot" href="images/dashboard.webp"><img src="images/dashboard.webp" width="1280" height="1400" loading="lazy" alt="Dashboard with net worth, monthly income and spending charts, upcoming installments and recent entries"></a>
+    </figure>
+  </section>
+
+  <section>
+    <h2 data-i18n="mobile_t">Made for the phone</h2>
+    <p class="lead" data-i18n="mobile_d">Installable as an app (PWA). Login with two-factor authentication, and a quick-entry screen: amount, from, to, description — with smart defaults.</p>
+    <div class="phones">
+      <figure><a class="shot" href="images/phone-landing.webp"><img src="images/phone-landing.webp" width="780" height="1688" loading="lazy" alt="Landing page with watercolor building blocks"></a><figcaption data-i18n="cap_landing">Public landing — reveals nothing about the app.</figcaption></figure>
+      <figure><a class="shot" href="images/phone-login.webp"><img src="images/phone-login.webp" width="780" height="1688" loading="lazy" alt="Login with a six-box verification code"></a><figcaption data-i18n="cap_login">Login + TOTP code (3–3 boxes).</figcaption></figure>
+      <figure><a class="shot" href="images/phone-lancar.webp"><img src="images/phone-lancar.webp" width="780" height="1688" loading="lazy" alt="Quick entry form"></a><figcaption data-i18n="cap_entry">Quick entry in a few taps.</figcaption></figure>
+      <figure><a class="shot" href="images/phone-painel.webp"><img src="images/phone-painel.webp" width="780" height="1688" loading="lazy" alt="Dashboard on the phone"></a><figcaption data-i18n="cap_dash">Dashboard on the go.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-i18n="reports_t">Reports</h2>
+    <p class="lead" data-i18n="reports_d">Balance sheet, income statement, spending by category (vs. the previous period) and a money-flow Sankey — every chart with a table view and CSV export.</p>
+    <div class="grid-2">
+      <figure><a class="shot" href="images/money-flow.webp"><img src="images/money-flow.webp" width="1280" height="1000" loading="lazy" alt="Money flow Sankey diagram"></a><figcaption data-i18n="cap_flow">Where the money came from and where it went.</figcaption></figure>
+      <figure><a class="shot" href="images/categories.webp"><img src="images/categories.webp" width="1280" height="1100" loading="lazy" alt="Spending by category compared to the previous period"></a><figcaption data-i18n="cap_cat">Categories vs. the previous period.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-i18n="gnucash_t">GnuCash-inspired core</h2>
+    <p class="lead" data-i18n="gnucash_d">A chart-of-accounts tree and a spreadsheet-like register, with running balance per account.</p>
+    <div class="grid-2">
+      <figure><a class="shot" href="images/register.webp"><img src="images/register.webp" width="1280" height="1000" loading="lazy" alt="Account register with running balance"></a><figcaption data-i18n="cap_reg">Register (ledger) of a credit card.</figcaption></figure>
+      <figure><a class="shot" href="images/accounts.webp"><img src="images/accounts.webp" width="1280" height="1100" loading="lazy" alt="Chart of accounts tree"></a><figcaption data-i18n="cap_acc">Chart of accounts, collapsible.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-i18n="eng_t">Engineering highlights</h2>
+    <p class="lead" data-i18n="eng_d">Small, tested increments — the boring parts done right.</p>
+    <div class="features">
+      <div class="feature"><h3 data-i18n="f1_t">Double entry, enforced twice</h3><p data-i18n="f1_d">Every transaction must sum to zero — validated in the service layer and again by a deferred PostgreSQL constraint trigger. Money is always Decimal, never float.</p></div>
+      <div class="feature"><h3 data-i18n="f2_t">Immutable audit trail</h3><p data-i18n="f2_d">Each create/edit/delete stores before/after snapshots, source and device; a database trigger blocks any change to the history.</p></div>
+      <div class="feature"><h3 data-i18n="f3_t">Security first</h3><p data-i18n="f3_d">Login + TOTP 2FA on every page, no public sign-up, login rate limiting, HTTPS with HSTS, secure cookies, secrets in environment variables.</p></div>
+      <div class="feature"><h3 data-i18n="f4_t">Fast data entry</h3><p data-i18n="f4_d">Accent-insensitive account search (Tab confirms), description memory that pre-fills the rest, split transactions with live balance check.</p></div>
+      <div class="feature"><h3 data-i18n="f5_t">Production on a VPS</h3><p data-i18n="f5_d">Gunicorn + Nginx under systemd on AWS Lightsail, Let's Encrypt, daily pg_dump backups with rotation, and a one-command deploy that runs the test suite first.</p></div>
+      <div class="feature"><h3 data-i18n="f6_t">392 automated tests</h3><p data-i18n="f6_d">Business rules (the zero-sum rule above all), reports, security and the production static build — plus real-browser checks with headless Edge.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="../" data-i18n="back">← Portfolio</a> · bauklotze engineering · 2026
+  </footer>
+</div>
+
+<script>
+  // Inglês por padrão, como o portfólio; o botão alterna para português.
+  const pt = {
+    back: "← Portfólio",
+    tagline: "Um app web de finanças pessoais que substituiu o GnuCash: contabilidade em partida dobrada, feito para lançar cada gasto em segundos, direto do celular.",
+    note: "O código-fonte é privado: este app guarda dados financeiros pessoais reais. Todas as capturas usam dados fictícios de exemplo.",
+    dash_t: "Painel",
+    dash_d: "Patrimônio líquido, entradas × saídas, gastos por categoria, próximas parcelas e alertas — numa tela só.",
+    mobile_t: "Feito para o celular",
+    mobile_d: "Instalável como app (PWA). Login com autenticação em dois fatores e uma tela de lançamento rápido: valor, de, para e descrição — com padrões inteligentes.",
+    cap_landing: "Landing pública — não revela nada do app.",
+    cap_login: "Login + código TOTP (quadradinhos 3–3).",
+    cap_entry: "Lançamento rápido em poucos toques.",
+    cap_dash: "Painel na palma da mão.",
+    reports_t: "Relatórios",
+    reports_d: "Balanço, receitas e despesas, gastos por categoria (comparados ao período anterior) e o fluxo do dinheiro em Sankey — todo gráfico com visão em tabela e exportação CSV.",
+    cap_flow: "De onde o dinheiro veio e para onde foi.",
+    cap_cat: "Categorias × período anterior.",
+    gnucash_t: "Núcleo inspirado no GnuCash",
+    gnucash_d: "Plano de contas em árvore e razão em formato de planilha, com saldo corrente por conta.",
+    cap_reg: "Razão de um cartão de crédito.",
+    cap_acc: "Plano de contas recolhível.",
+    eng_t: "Destaques de engenharia",
+    eng_d: "Incrementos pequenos e testados — o básico bem-feito.",
+    f1_t: "Partida dobrada, garantida duas vezes",
+    f1_d: "Todo lançamento precisa somar zero — validado na camada de serviço e de novo por um trigger de restrição adiado no PostgreSQL. Dinheiro sempre em Decimal, nunca float.",
+    f2_t: "Trilha de auditoria imutável",
+    f2_d: "Cada criação/edição/exclusão guarda o antes e o depois, a origem e o dispositivo; um trigger do banco impede qualquer alteração no histórico.",
+    f3_t: "Segurança em primeiro lugar",
+    f3_d: "Login + 2FA (TOTP) em todas as páginas, sem cadastro público, limite de tentativas, HTTPS com HSTS, cookies seguros e segredos em variáveis de ambiente.",
+    f4_t: "Lançamento rápido",
+    f4_d: "Busca de contas sem acento (Tab confirma), memória de descrições que preenche o resto, lançamentos divididos com conferência de saldo ao vivo.",
+    f5_t: "Produção numa VPS",
+    f5_d: "Gunicorn + Nginx com systemd na AWS Lightsail, Let's Encrypt, backup diário com pg_dump e rodízio, e publicação com um comando que roda os testes antes.",
+    f6_t: "392 testes automatizados",
+    f6_d: "Regras de negócio (a soma zero acima de tudo), relatórios, segurança e o build de produção — além de testes em navegador real com Edge headless."
+  };
+  const en = {};
+  document.querySelectorAll('[data-i18n]').forEach(el => { en[el.dataset.i18n] = el.textContent; });
+  let lang = 'en';
+  try { lang = localStorage.getItem('jl-lang') || 'en'; } catch (e) {}
+  function apply() {
+    const dict = lang === 'pt' ? pt : en;
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = dict[el.dataset.i18n]; });
+    document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+    document.getElementById('langBtn').textContent = lang === 'pt' ? 'EN' : 'PT';
+  }
+  document.getElementById('langBtn').addEventListener('click', () => {
+    lang = lang === 'pt' ? 'en' : 'pt';
+    try { localStorage.setItem('jl-lang', lang); } catch (e) {}
+    apply();
+  });
+  apply();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# Portfólio — Luiz Eduardo
+# Portfólio — bauklotze engineering
 
 Site estático (um único arquivo `index.html`, sem build, sem dependências além de uma fonte do Google Fonts) pronto para publicar no GitHub Pages. Agora com **PT/EN** (botão de idioma ao lado do de tema) e uma linha do tempo ("Jornada") também dirigida por dados, no mesmo padrão dos projetos.
 
@@ -62,6 +62,7 @@ Além do portfólio na raiz, o repositório hospeda páginas autônomas em subpa
 | --- | --- | --- |
 | `vsm-guide/` | Guia de metodologia de Mapa de Fluxo de Valor (VSM) | `/vsm-guide/` |
 | `linear-regradesc/` | Painel interativo de regressão linear com gradiente descendente (PT/EN, inglês por padrão) | `/linear-regradesc/` |
+| `janus-ledger/` | Vitrine do app de finanças pessoais (código privado; capturas com dados fictícios; PT/EN, inglês por padrão) | `/janus-ledger/` |
 
 Para adicionar uma nova página: crie a pasta, coloque o `index.html` dela dentro e, se for algo mostrável, registre um card no array `projetos` com o link no campo `demo`.
 
